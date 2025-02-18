@@ -14,7 +14,10 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String @default("John Doe")
-  email String @default("john.doe@gmail.com")
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String   @unique
+  clerkUserId String   @unique
+  timestamp   DateTime @default(now())
 }
