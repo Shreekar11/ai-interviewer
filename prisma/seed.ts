@@ -5,8 +5,10 @@ const client = new PrismaClient();
 async function main() {
   await client.user.create({
     data: {
-      name: "John Doe",
-      email: "john.doe#example.com",
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      clerkUserId: "user_123XYZ",
     },
   });
 }
