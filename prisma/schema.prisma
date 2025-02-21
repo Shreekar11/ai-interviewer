@@ -20,7 +20,7 @@ model User {
   email       String      @unique
   clerkUserId String      @unique
   profile     Profile?
-  interviews   Interview[]
+  interviews  Interview[]
   createdAt   DateTime    @default(now())
 }
 
@@ -68,14 +68,14 @@ model Skill {
 }
 
 model Interview {
-  id                String              @id @default(uuid())
-  fkUserId          Int                 @unique
+  id                String             @id @default(uuid())
+  fkUserId          Int                @unique
   name              String
   type              InterviewType
   questions         String[]
-  interviewFeedback InterviewFeedback[]
-  user              User                @relation(fields: [fkUserId], references: [id])
-  createdAt         DateTime            @default(now())
+  interviewFeedback InterviewDetails[]
+  user              User               @relation(fields: [fkUserId], references: [id])
+  createdAt         DateTime           @default(now())
 }
 
 enum InterviewType {
@@ -83,26 +83,39 @@ enum InterviewType {
   CUSTOM
 }
 
-model InterviewFeedback {
+model InterviewDetails {
   id            String    @id @default(uuid())
   fkInterviewId String    @unique
-  feedback      Feedback?
+  video         String
+  feedback      Feedback[]
+  summary       Summary?
   interview     Interview @relation(fields: [fkInterviewId], references: [id])
 }
 
 model Feedback {
-  id                        String            @id @default(uuid())
-  fkInterviewFeedbackId     String            @unique
+  id                        String           @id @default(uuid())
+  fkInterviewDetailsId      String           @unique
   label                     FeedbackLabel
   question                  String
   answer                    String
   feedback                  String
   suggesstionForImprovement String
-  score                     Int
-  interviewFeedback         InterviewFeedback @relation(fields: [fkInterviewFeedbackId], references: [id])
+  interviewDetails          InterviewDetails @relation(fields: [fkInterviewDetailsId], references: [id])
 }
 
 enum FeedbackLabel {
   GOOD
   NEEDS_IMPROVEMENT
+}
+
+model Summary {
+  id                       String @id @default(uuid())
+  fkInterviewDetailsId     String @unique
+  relevantResponses        String
+  clarityAndStructure      String
+  professionalLanguage     String
+  initialIdeas             String
+  additionalNotableAspects String
+  score                    Int
+  interviewDetails InterviewDetails @relation(fields: [fkInterviewDetailsId], references: [id])
 }
