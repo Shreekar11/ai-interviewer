@@ -7,8 +7,8 @@ async function main() {
     data: {
       firstName: "John",
       lastName: "Doe",
-      email: "john.doe@example.com",
-      clerkUserId: "user_123XYZ",
+      email: "johndoe@example.com",
+      clerkUserId: "user_123XYZM",
     },
   });
 }

@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id          Int         @id @default(autoincrement())
+  id          String      @id @default(uuid())
   firstName   String
   lastName    String
   email       String      @unique
@@ -26,7 +26,7 @@ model User {
 
 model Profile {
   id         String       @id @default(uuid())
-  fkUserId   Int          @unique
+  fkUserId   String       @unique
   firstName  String
   lastName   String
   aboutMe    String
@@ -69,7 +69,7 @@ model Skill {
 
 model Interview {
   id                String             @id @default(uuid())
-  fkUserId          Int                @unique
+  fkUserId          String             @unique
   name              String
   type              InterviewType
   questions         String[]
@@ -84,12 +84,12 @@ enum InterviewType {
 }
 
 model InterviewDetails {
-  id            String    @id @default(uuid())
-  fkInterviewId String    @unique
+  id            String     @id @default(uuid())
+  fkInterviewId String     @unique
   video         String
   feedback      Feedback[]
   summary       Summary?
-  interview     Interview @relation(fields: [fkInterviewId], references: [id])
+  interview     Interview  @relation(fields: [fkInterviewId], references: [id])
 }
 
 model Feedback {
@@ -109,13 +109,13 @@ enum FeedbackLabel {
 }
 
 model Summary {
-  id                       String @id @default(uuid())
-  fkInterviewDetailsId     String @unique
+  id                       String           @id @default(uuid())
+  fkInterviewDetailsId     String           @unique
   relevantResponses        String
   clarityAndStructure      String
   professionalLanguage     String
   initialIdeas             String
   additionalNotableAspects String
   score                    Int
-  interviewDetails InterviewDetails @relation(fields: [fkInterviewDetailsId], references: [id])
+  interviewDetails         InterviewDetails @relation(fields: [fkInterviewDetailsId], references: [id])
 }
