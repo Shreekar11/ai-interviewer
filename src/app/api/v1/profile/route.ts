@@ -1,0 +1,181 @@
+import ProfileRepository from "@/repository/profile.repo";
+import { NextRequest, NextResponse } from "next/server";
+
+const handleError = (error: unknown, operation: string) => {
+  console.error(`Error ${operation} profile:`, error);
+  return NextResponse.json(
+    {
+      status: false,
+      message: `An error occurred while ${operation} the profile.`,
+    },
+    { status: 500 }
+  );
+};
+
+export async function POST(req: NextRequest) {
+  try {
+    const { data } = await req.json();
+
+    if (!data || !data.userId) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Missing required fields",
+        },
+        { status: 400 }
+      );
+    }
+
+    const profileRepository = new ProfileRepository();
+
+    const profileData = await profileRepository.getProfileByUserId(data.userId);
+
+    if (profileData) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Profile already exists with this userId",
+        },
+        { status: 400 }
+      );
+    }
+
+    const newProfile = await profileRepository.create(data);
+
+    return NextResponse.json(
+      {
+        status: true,
+        message: "Profile created successfully!",
+        data: newProfile,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    return handleError(error, "creating");
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "userId parameter is required",
+        },
+        { status: 400 }
+      );
+    }
+
+    const profileRepository = new ProfileRepository();
+    const profileData = await profileRepository.getProfileByUserId(userId);
+
+    if (!profileData) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Profile not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        status: true,
+        message: "Profile retrieved successfully!",
+        data: profileData,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return handleError(error, "retrieving");
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const { data } = await req.json();
+
+    if (!data || !data.userId) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Missing required fields",
+        },
+        { status: 400 }
+      );
+    }
+
+    const profileRepository = new ProfileRepository();
+    const profileData = await profileRepository.getProfileByUserId(data.userId);
+
+    if (!profileData) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Profile not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    const updateProfile = await profileRepository.patch(profileData.id, data);
+
+    return NextResponse.json(
+      {
+        status: true,
+        message: "Profile updated successfully!",
+        data: updateProfile,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return handleError(error, "updating");
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "userId parameter is required",
+        },
+        { status: 400 }
+      );
+    }
+
+    const profileRepository = new ProfileRepository();
+    const profileData = await profileRepository.getProfileByUserId(userId);
+
+    if (!profileData) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Profile not found",
+        },
+        { status: 404 }
+      );
+    }
+
+    await profileRepository.delete(profileData.id);
+
+    return NextResponse.json(
+      {
+        status: true,
+        message: "Profile deleted successfully!",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return handleError(error, "deleting");
+  }
+}
