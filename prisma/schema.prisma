@@ -73,6 +73,8 @@ model Interview {
   name              String
   type              InterviewType
   questions         String[]
+  skills            String[]           @default([])
+  jobDescription    String?
   interviewFeedback InterviewDetails[]
   user              User               @relation(fields: [fkUserId], references: [id])
   createdAt         DateTime           @default(now())
