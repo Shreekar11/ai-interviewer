@@ -1,4 +1,5 @@
 import ProfileRepository from "@/repository/profile.repo";
+import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const handleError = (error: unknown, operation: string) => {
@@ -13,6 +14,8 @@ const handleError = (error: unknown, operation: string) => {
 };
 
 export async function POST(req: NextRequest) {
+  const prisma = new PrismaClient();
+
   try {
     const { data } = await req.json();
 
@@ -40,7 +43,87 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const newProfile = await profileRepository.create(data);
+    const newProfile = await prisma.$transaction(async (tx) => {
+      const createdProfile = await tx.profile.create({
+        data: {
+          fkUserId: data.userId,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          aboutMe: data.aboutMe,
+        },
+      });
+
+      if (data.experience && Array.isArray(data.experience)) {
+        await Promise.all(
+          data.experience.map(
+            (exp: {
+              company: string;
+              position: string;
+              description: string;
+              startDate: Date;
+              endDate: Date;
+            }) =>
+              tx.experience.create({
+                data: {
+                  fkProfileId: createdProfile.id,
+                  company: exp.company,
+                  position: exp.position,
+                  description: exp.description,
+                  startDate: new Date(exp.startDate),
+                  endDate: new Date(exp.endDate),
+                },
+              })
+          )
+        );
+      }
+
+      if (data.projects && Array.isArray(data.projects)) {
+        await Promise.all(
+          data.projects.map(
+            (project: {
+              projectName: string;
+              description: string;
+              startDate: Date;
+              endDate: Date;
+            }) =>
+              tx.project.create({
+                data: {
+                  fkProfileId: createdProfile.id,
+                  projectName: project.projectName,
+                  description: project.description,
+                  startDate: new Date(project.startDate),
+                  endDate: new Date(project.endDate),
+                },
+              })
+          )
+        );
+      }
+
+      if (data.skills && Array.isArray(data.skills)) {
+        await Promise.all(
+          data.skills.map((skill: { skillName: string; description: string }) =>
+            tx.skill.create({
+              data: {
+                fkProfileId: createdProfile.id,
+                skillName: skill.skillName,
+                description: skill.description,
+              },
+            })
+          )
+        );
+      }
+
+      return tx.profile.findUnique({
+        where: { id: createdProfile.id },
+        include: {
+          experience: true,
+          projects: true,
+          skills: true,
+        },
+      });
+    });
+
+    await prisma.$disconnect();
 
     return NextResponse.json(
       {
@@ -51,6 +134,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
+    await prisma.$disconnect();
     return handleError(error, "creating");
   }
 }
