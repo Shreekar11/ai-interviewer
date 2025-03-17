@@ -1,8 +1,8 @@
 -- Users Table
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
   email TEXT UNIQUE NOT NULL,
   auth_id UUID UNIQUE NOT NULL REFERENCES auth.users(id),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
