@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useActionState, useState } from "react";
-import { ActionState } from "@/lib/auth/middleware";
+import { useState } from "react";
 import { createClient } from "../../../supabase/client";
 
 export function Login({ mode = "signin" }: { mode?: "signin" | "signup" }) {
@@ -18,7 +17,7 @@ export function Login({ mode = "signin" }: { mode?: "signin" | "signup" }) {
     supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `http://localhost:3000`,
+        redirectTo: `http://localhost:3000/onboarding`,
       },
     });
     setLoading(false);
