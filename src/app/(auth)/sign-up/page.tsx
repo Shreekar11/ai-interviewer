@@ -1,5 +1,5 @@
 import { getUser } from "@/queries/user";
-import { Login } from "@/components/auth/login-form";
+import { AuthForm } from "@/components/auth/auth-form";
 import { redirect } from "next/navigation";
 
 export default async function SignUpPage() {
@@ -8,5 +8,5 @@ export default async function SignUpPage() {
     return redirect("/");
   }
 
-  return <Login mode="signup" />;
+  return <AuthForm mode="signup" />;
 }

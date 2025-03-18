@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getUser } from "@/queries/user";
-import { Login } from "@/components/auth/login-form";
+import { AuthForm } from "@/components/auth/auth-form";
 
 export default async function SignInPage() {
   
@@ -9,5 +9,5 @@ export default async function SignInPage() {
     return redirect("/");
   }
 
-  return <Login mode="signin" />;
+  return <AuthForm mode="signin" />;
 }

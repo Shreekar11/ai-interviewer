@@ -5,13 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "../../../supabase/client";
 
-export function Login({ mode = "signin" }: { mode?: "signin" | "signup" }) {
+export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
 
   const handleGoogleSignIn = () => {
-    const redirectTo = `http://localhost:3000/api/auth/callback`;
     setLoading(true);
     const supabase = createClient();
     supabase.auth.signInWithOAuth({
@@ -102,8 +101,7 @@ export function Login({ mode = "signin" }: { mode?: "signin" | "signup" }) {
               ? "New to our platform? "
               : "Already have an account? "}
             <Link
-              href={`${mode === "signin" ? "/sign-up" : "/sign-in"}${
-                redirect && `?redirect=${redirect}`}`}
+              href={`${mode === "signin" ? "/sign-up" : "/sign-in"}}`}
               className="font-medium text-blue-600 hover:text-blue-500"
             >
               {mode === "signin" ? "Create an account" : "Sign in"}
