@@ -4,8 +4,8 @@ import { createClient } from "../../supabase/client";
 export const createProfile = async (data: Profile) => {
   const { first_name, last_name, about_me, experience, projects, skills } =
     data;
-  try {
-    const supabase = await createClient();
+
+    const supabase = createClient();
     const session = await supabase.auth.getUser();
 
     const {
@@ -23,7 +23,7 @@ export const createProfile = async (data: Profile) => {
         last_name,
         about_me,
       })
-      .select("id")
+      .select("*")
       .single();
 
     if (profileError) {
@@ -72,7 +72,151 @@ export const createProfile = async (data: Profile) => {
     if (skillError) {
       throw new Error(`Error inserting skills: ${skillError.message}`);
     }
-  } catch (error) {
-    console.log("Error: ", error);
+
+    return profile;
+};
+
+export const getProfileByUserId = async () => {
+  const supabase = createClient();
+
+  // Get the current user
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    throw new Error("Unauthorized");
+  }
+
+  // Get profile with related data
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select(
+      `
+      *,
+      experiences (*),
+      projects (*),
+      skills (*)
+    `
+    )
+    .eq("fk_user_id", user.id)
+    .single();
+
+  if (profileError) {
+    throw new Error(`Error fetching profile: ${profileError.message}`);
+  }
+
+  return profile;
+};
+
+export const updateProfile = async (data: Profile) => {
+  const { id, first_name, last_name, about_me, experience, projects, skills } = data;
+  
+  const supabase = createClient();
+  
+  try {
+    // Update profile
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({
+        first_name,
+        last_name,
+        about_me,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", id);
+
+    if (profileError) {
+      throw new Error(`Error updating profile: ${profileError.message}`);
+    }
+
+    // Delete existing related data
+    const { error: deleteExpError } = await supabase
+      .from("experiences")
+      .delete()
+      .eq("fk_profile_id", id);
+
+    const { error: deleteProjError } = await supabase
+      .from("projects")
+      .delete()
+      .eq("fk_profile_id", id);
+
+    const { error: deleteSkillError } = await supabase
+      .from("skills")
+      .delete()
+      .eq("fk_profile_id", id);
+
+    if (deleteExpError || deleteProjError || deleteSkillError) {
+      throw new Error("Error deleting existing data");
+    }
+
+    // Insert new experiences
+    if (experience && experience.length > 0) {
+      const { error: expError } = await supabase
+        .from("experiences")
+        .insert(
+          experience.map(exp => ({
+            ...exp,
+            fk_profile_id: id
+          }))
+        );
+
+      if (expError) {
+        throw new Error(`Error updating experiences: ${expError.message}`);
+      }
+    }
+
+    // Insert new projects
+    if (projects && projects.length > 0) {
+      const { error: projError } = await supabase
+        .from("projects")
+        .insert(
+          projects.map(proj => ({
+            ...proj,
+            fk_profile_id: id
+          }))
+        );
+
+      if (projError) {
+        throw new Error(`Error updating projects: ${projError.message}`);
+      }
+    }
+
+    // Insert new skills
+    if (skills && skills.length > 0) {
+      const { error: skillError } = await supabase
+        .from("skills")
+        .insert(
+          skills.map(skill => ({
+            ...skill,
+            fk_profile_id: id
+          }))
+        );
+
+      if (skillError) {
+        throw new Error(`Error updating skills: ${skillError.message}`);
+      }
+    }
+
+    // Fetch and return updated profile with all related data
+    const { data: updatedProfile, error: fetchError } = await supabase
+      .from("profiles")
+      .select(`
+        *,
+        experiences (*),
+        projects (*),
+        skills (*)
+      `)
+      .eq("id", id)
+      .single();
+
+    if (fetchError) {
+      throw new Error(`Error fetching updated profile: ${fetchError.message}`);
+    }
+
+    return updatedProfile;
+  } catch (error: any) {
+    throw new Error(`Error updating profile: ${error.message}`);
   }
 };
