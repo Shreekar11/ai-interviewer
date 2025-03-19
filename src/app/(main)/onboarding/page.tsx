@@ -3,13 +3,7 @@
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { createClient } from "../../../../supabase/client";
 import { saveUserToSupabase } from "@/services/user.service";
-
-interface UserMetadata {
-  name?: string;
-  email?: string;
-}
 
 const OnboardingPage = () => {
   const router = useRouter();

@@ -9,7 +9,7 @@ export const saveUserToSupabase = async (
   setError: (error: string | null) => void
 ) => {
   try {
-    const supabase = await createClient();
+    const supabase = createClient();
     const session = await supabase.auth.getUser();
 
     const {
