@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
       .select("questions")
       .eq("fk_user_id", user_id)
       .single();
+
     if (!questions) {
       return NextResponse.json(
         {
@@ -22,9 +23,12 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      context: questions,
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        context: questions,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error: ", error);
   }

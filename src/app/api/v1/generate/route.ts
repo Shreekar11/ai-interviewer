@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         
         For each response, STRICTLY FOLLOW this exact formatting WITHOUT ANY ASTERISKS:
         
-        Label: [Good/Needs Improvement]
+        Label: [GOOD/NEEDS_IMPROVEMENT]
         Question: [Interviewer's question]
         Your Answer: [Interviewee's answer]
         Feedback: [Provide direct feedback to the interviewee]
