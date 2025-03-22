@@ -1,4 +1,4 @@
-function parseInterviewFeedback(feedbacks: string[]) {
+export function parseInterviewFeedback(feedbacks: string[]) {
     const feedback_result: any[] = [];
     let feedback_object: any | null = null;
     let performance_summary: any | null = null;

@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "../../../../../supabase/client";
+import { InterviewService } from "../../../../services/interview.service";
+import { parseInterviewFeedback } from "../../../../utils/parse-feedback";
 
 export async function POST(req: NextRequest) {
   try {
     const { room_id: interviewId, transcription } = await req.json();
-
-    const supabase = createClient();
 
     // Formatting transcription data
     const transcript = [];
@@ -38,39 +37,8 @@ export async function POST(req: NextRequest) {
 
     const result = parseInterviewFeedback(feedbacks || []);
 
-    const { data: interviewDetails, error: interviewDetailsError } =
-      await supabase
-        .from("interview_details")
-        .insert({ fk_interview_id: interviewId })
-        .select("*")
-        .single();
-
-    if (interviewDetailsError) {
-      throw new Error(
-        `Error inserting interview detail: ${interviewDetailsError.message}`
-      );
-    }
-
-    const feedback = result.feedbacks.map(async (feedback) => {
-      await supabase.from("feedback").insert({
-        fk_interview_details_id: interviewDetails.id,
-        label: feedback.label,
-        question: feedback.question,
-        answer: feedback.yourAnswer,
-        feedback: feedback.feedback,
-        suggesstion_for_improvement: feedback.suggesstionForImprovement,
-      });
-    });
-
-    await supabase.from("summaries").insert({
-      fk_interview_details_id: interviewDetails.id,
-      relevant_responses: result.summary.relevantResponses,
-      clarity_and_structure: result.summary.clarityAndStructure,
-      professional_language: result.summary.professionalLanguage,
-      initial_ideas: result.summary.initialIdeas,
-      additional_notable_aspects: result.summary.additionalNotableAspects,
-      score: result.summary.score,
-    });
+    // Use the interview service to save feedback data
+    await InterviewService.saveFeedbackData(interviewId, result);
 
     return NextResponse.json({
       status: true,

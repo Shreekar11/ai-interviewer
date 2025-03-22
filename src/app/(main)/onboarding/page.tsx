@@ -1,9 +1,9 @@
 "use client";
 
+import { UserService } from "@/services/user.service";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { saveUserToSupabase } from "@/services/user.service";
 
 const OnboardingPage = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const OnboardingPage = () => {
       setIsLoading(true);
       setError(null);
 
-      await saveUserToSupabase(setError);
+      await UserService.saveUserToSupabase(setError);
 
       router.push("/");
     } catch (err: any) {

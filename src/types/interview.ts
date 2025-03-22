@@ -1,0 +1,31 @@
+/**
+ * Represents a single feedback item for an interview question
+ */
+export interface FeedbackItem {
+  label: string;
+  question: string;
+  yourAnswer: string;
+  feedback: string;
+  category?: string | null;
+  suggesstionForImprovement?: string | null;
+}
+
+/**
+ * Represents the summary of an interview performance
+ */
+export interface InterviewSummary {
+  relevantResponses: string;
+  clarityAndStructure: string;
+  professionalLanguage: string;
+  initialIdeas: string;
+  additionalNotableAspects: string;
+  score: string;
+}
+
+/**
+ * Represents the complete interview feedback data
+ */
+export interface InterviewFeedback {
+  feedbacks: FeedbackItem[];
+  summary: InterviewSummary;
+} 
