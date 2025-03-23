@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, ArrowRightIcon } from "lucide-react"
-import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, ArrowRightIcon } from "lucide-react";
+import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 export default function LandingPage() {
   // Animation variants for text elements
@@ -20,7 +20,7 @@ export default function LandingPage() {
         ease: [0.22, 1, 0.36, 1],
       },
     }),
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-50 relative overflow-hidden">
@@ -78,12 +78,24 @@ export default function LandingPage() {
                   d="M22 18C22 20.209 20.209 22 18 22C15.791 22 14 20.209 14 18C14 15.791 15.791 14 18 14C20.209 14 22 15.791 22 18Z"
                   fill="#FFFFFF"
                 />
-                <path d="M26 14L28 18L26 22" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-                <path d="M10 14L8 18L10 22" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
+                <path
+                  d="M26 14L28 18L26 22"
+                  stroke="#FFFFFF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10 14L8 18L10 22"
+                  stroke="#FFFFFF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
               </svg>
               <div className="text-2xl font-bold text-blue-600">
                 <span className="font-bold tracking-tight">Prep</span>
-                <span className="font-bold tracking-tight text-blue-800">Pulse</span>
+                <span className="font-bold tracking-tight text-blue-800">
+                  Pulse
+                </span>
               </div>
             </motion.div>
           </div>
@@ -116,7 +128,7 @@ export default function LandingPage() {
           >
             <div
               className={cn(
-                "group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800",
+                "group rounded-full border border-black/5 bg-neutral-100 text-base text-white transition-all ease-in hover:cursor-pointer hover:bg-neutral-200 dark:border-white/5 dark:bg-neutral-900 dark:hover:bg-neutral-800"
               )}
             >
               <AnimatedShinyText className="inline-flex items-center justify-center px-4 py-1 transition ease-out hover:text-neutral-600 hover:duration-300 hover:dark:text-neutral-400">
@@ -159,22 +171,29 @@ export default function LandingPage() {
               variants={textVariants}
               className="text-xl text-gray-600 max-w-2xl mx-auto mb-10"
             >
-              PrepPulse is the enterprise-ready platform to prepare for all of your interviews. Plus, enabling
-              personalized feedback to improve your interview skills.
+              PrepPulse is the enterprise-ready platform to prepare for all of
+              your interviews. Plus, enabling personalized feedback to improve
+              your interview skills.
             </motion.p>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: 0.8,
+                delay: 0.8,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <Button
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-600/80 w-64 shadow-xl 
                 transition-all duration-300 hover:shadow-lg hover:translate-y-px"
+                onClick={() => (window.location.href = "/dashboard")}
               >
-                Get started - it&apos;s free <ArrowRight className="ml-2 h-4 w-4" />
+                Get started - it&apos;s free{" "}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </motion.div>
 
@@ -190,5 +209,5 @@ export default function LandingPage() {
         </main>
       </div>
     </div>
-  )
+  );
 }
