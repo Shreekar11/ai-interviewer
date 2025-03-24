@@ -10,15 +10,10 @@ interface SkillsFormProps {
   data: {
     name: string;
   }[];
-  updateData: (data: any) => void;
 }
 
-export default function SkillsForm({ data, updateData }: SkillsFormProps) {
+export default function SkillsForm({ data }: SkillsFormProps) {
   const [skills, setSkills] = useState(data.length ? data : [{ name: "" }]);
-
-  useEffect(() => {
-    updateData(skills);
-  }, [skills, updateData]);
 
   const handleSkillChange = (index: number, value: string) => {
     const updatedSkills = [...skills];

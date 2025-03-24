@@ -11,18 +11,12 @@ interface PersonalInfoFormProps {
     lastName: string;
     aboutMe: string;
   };
-  updateData: (data: any) => void;
 }
 
 export default function PersonalInfoForm({
   data,
-  updateData,
 }: PersonalInfoFormProps) {
   const [formState, setFormState] = useState(data);
-
-  useEffect(() => {
-    updateData(formState);
-  }, [formState, updateData]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;

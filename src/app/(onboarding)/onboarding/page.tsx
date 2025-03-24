@@ -58,6 +58,14 @@ const steps = [
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  const page = searchParams.get("page");
+
+  useEffect(() => {
+    const pageStep = steps.find((step) => step.slug === page);
+    setCurrentStep(pageStep?.id || 1);
+  }, [page]);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -82,13 +90,6 @@ export default function OnboardingPage() {
     skills: [{ name: "" }],
   });
 
-  const updateFormData = (section: any, data: (data: any) => void) => {
-    setFormData((prev) => ({
-      ...prev,
-      [section]: data,
-    }));
-  };
-
   const handleStepChange = (stepId: number) => {
     setCurrentStep(stepId);
   };
@@ -97,6 +98,9 @@ export default function OnboardingPage() {
     if (currentStep < 4) {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
+
+      const newStep = steps.find((step) => step.id === nextStep);
+      router.push(`/onboarding?page=${newStep?.slug}`);
     }
   };
 
@@ -104,6 +108,9 @@ export default function OnboardingPage() {
     if (currentStep > 1) {
       const prevStep = currentStep - 1;
       setCurrentStep(prevStep);
+
+      const newStep = steps.find((step) => step.id === prevStep);
+      router.push(`/onboarding?page=${newStep?.slug}`);
     }
   };
 
@@ -122,10 +129,11 @@ export default function OnboardingPage() {
             <Image
               src={"/assets/logo.png"}
               alt="logo"
-              height={50}
-              width={50}
+              height={30}
+              width={30}
               quality={100}
               layout="fixed"
+              className="px-1"
             />
             <h1 className="font-bold text-xl">InterviewPrep</h1>
           </div>
@@ -202,29 +210,13 @@ export default function OnboardingPage() {
             {/* Form content */}
             <div className="bg-white rounded-xl border shadow-lg p-8 mb-8">
               {currentStep === 1 && (
-                <PersonalInfoForm
-                  data={formData.personal}
-                  updateData={(data: any) => updateFormData("personal", data)}
-                />
+                <PersonalInfoForm data={formData.personal} />
               )}
-              {currentStep === 2 && (
-                <ProjectForm
-                  data={formData.project}
-                  updateData={(data: any) => updateFormData("project", data)}
-                />
-              )}
+              {currentStep === 2 && <ProjectForm data={formData.project} />}
               {currentStep === 3 && (
-                <ExperienceForm
-                  data={formData.experience}
-                  updateData={(data: any) => updateFormData("experience", data)}
-                />
+                <ExperienceForm data={formData.experience} />
               )}
-              {currentStep === 4 && (
-                <SkillsForm
-                  data={formData.skills}
-                  updateData={(data: any) => updateFormData("skills", data)}
-                />
-              )}
+              {currentStep === 4 && <SkillsForm data={formData.skills} />}
             </div>
 
             {/* Navigation buttons */}

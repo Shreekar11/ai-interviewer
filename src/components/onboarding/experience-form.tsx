@@ -13,18 +13,12 @@ interface ExperienceFormProps {
     startDate: string;
     endDate: string;
   };
-  updateData: (data: any) => void;
 }
 
 export default function ExperienceForm({
   data,
-  updateData,
 }: ExperienceFormProps) {
   const [formState, setFormState] = useState(data);
-
-  useEffect(() => {
-    updateData(formState);
-  }, [formState, updateData]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;

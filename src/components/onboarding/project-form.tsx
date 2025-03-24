@@ -12,15 +12,10 @@ interface ProjectFormProps {
     startDate: string;
     endDate: string;
   };
-  updateData: (data: any) => void;
 }
 
-export default function ProjectForm({ data, updateData }: ProjectFormProps) {
+export default function ProjectForm({ data  }: ProjectFormProps) {
   const [formState, setFormState] = useState(data);
-
-  useEffect(() => {
-    updateData(formState);
-  }, [formState, updateData]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
