@@ -4,18 +4,18 @@ export interface Profile {
     lastName: string;
     aboutMe: string;
   };
-  project: {
+  projects: {
     name: string;
     description: string;
     startDate: string;
     endDate: string;
-  };
+  }[];
   experience: {
     company: string;
     position: string;
     description: string;
     startDate: string;
     endDate: string;
-  };
+  }[];
   skills: { name: string }[];
 }

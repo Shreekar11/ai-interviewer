@@ -5,14 +5,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, X } from "lucide-react";
+import { Profile } from "@/types";
 
 interface SkillsFormProps {
   data: {
     name: string;
   }[];
+  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
 }
 
-export default function SkillsForm({ data }: SkillsFormProps) {
+export default function SkillsForm({ data, setFormData }: SkillsFormProps) {
   const [skills, setSkills] = useState(data.length ? data : [{ name: "" }]);
 
   const handleSkillChange = (index: number, value: string) => {
@@ -33,6 +35,13 @@ export default function SkillsForm({ data }: SkillsFormProps) {
     }
   };
 
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      skills: skills,
+    }));
+  }, [skills, setFormData]);
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -47,7 +56,6 @@ export default function SkillsForm({ data }: SkillsFormProps) {
                 value={skill.name}
                 onChange={(e) => handleSkillChange(index, e.target.value)}
                 placeholder="Enter a skill (e.g., JavaScript, Project Management)"
-                className=""
               />
             </div>
             <Button

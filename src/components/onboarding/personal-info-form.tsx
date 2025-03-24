@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Profile } from "@/types";
 
 interface PersonalInfoFormProps {
   data: {
@@ -11,18 +12,21 @@ interface PersonalInfoFormProps {
     lastName: string;
     aboutMe: string;
   };
+  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
 }
 
 export default function PersonalInfoForm({
   data,
+  setFormData,
 }: PersonalInfoFormProps) {
-  const [formState, setFormState] = useState(data);
-
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormState((prev) => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      personal: {
+        ...prev.personal,
+        [name]: value,
+      },
     }));
   };
 
@@ -36,7 +40,7 @@ export default function PersonalInfoForm({
           <Input
             id="firstName"
             name="firstName"
-            value={formState.firstName}
+            value={data.firstName}
             onChange={handleChange}
             placeholder="Enter your first name"
             className=""
@@ -51,7 +55,7 @@ export default function PersonalInfoForm({
           <Input
             id="lastName"
             name="lastName"
-            value={formState.lastName}
+            value={data.lastName}
             onChange={handleChange}
             placeholder="Enter your last name"
             className=""
@@ -67,7 +71,7 @@ export default function PersonalInfoForm({
         <Textarea
           id="aboutMe"
           name="aboutMe"
-          value={formState.aboutMe}
+          value={data.aboutMe}
           onChange={handleChange}
           placeholder="Tell us about yourself, your interests, and your goals..."
           className="min-h-[150px] "

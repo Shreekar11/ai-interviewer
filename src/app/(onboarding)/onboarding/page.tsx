@@ -24,6 +24,8 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Profile } from "@/types";
 
 const steps = [
   {
@@ -59,7 +61,7 @@ const steps = [
 export default function OnboardingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const page = searchParams.get("page");
 
   useEffect(() => {
@@ -68,25 +70,29 @@ export default function OnboardingPage() {
   }, [page]);
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Profile>({
     personal: {
       firstName: "",
       lastName: "",
       aboutMe: "",
     },
-    project: {
-      name: "",
-      description: "",
-      startDate: "",
-      endDate: "",
-    },
-    experience: {
-      company: "",
-      position: "",
-      description: "",
-      startDate: "",
-      endDate: "",
-    },
+    projects: [
+      {
+        name: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+      },
+    ],
+    experience: [
+      {
+        company: "",
+        position: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+      },
+    ],
     skills: [{ name: "" }],
   });
 
@@ -121,9 +127,9 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex p-2">
+    <div className="min-h-screen flex">
       {/* Left sidebar with vertical stepper - increased width */}
-      <div className="w-96 bg-blue-50 rounded-xl border shadow-xl flex flex-col">
+      <div className="w-96 bg-blue-50 border shadow-xl flex flex-col">
         <div className="p-6">
           <div className="flex items-center">
             <Image
@@ -178,6 +184,7 @@ export default function OnboardingPage() {
         <div className="p-6 mt-auto">
           <Button
             variant={"ghost"}
+            onClick={() => router.push("/")}
             className="w-full flex items-center text-sm hover:text-white-600 bg-blue-500 hover:bg-blue-600 text-white"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -187,84 +194,102 @@ export default function OnboardingPage() {
       </div>
 
       {/* Right content area */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-8">
-          <div className="max-w-3xl mx-auto">
-            {/* Content header */}
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold text-blue-900">
-                {currentStep === 1 && "Tell us about yourself"}
-                {currentStep === 2 && "Share your project details"}
-                {currentStep === 3 && "What's your work experience?"}
-                {currentStep === 4 && "What skills do you have?"}
-              </h1>
-              <p className="text-blue-600 mt-2">
-                {currentStep === 1 && "Complete your profile to get started"}
-                {currentStep === 2 &&
-                  "Tell us about a significant project you've worked on"}
-                {currentStep === 3 && "Share your professional background"}
-                {currentStep === 4 && "Add skills to showcase your expertise"}
-              </p>
-            </div>
+      <ScrollArea className="flex-1 flex flex-col w-full h-screen">
+        <div className="">
+          <main className="flex-1 p-8">
+            <div className="max-w-3xl mx-auto">
+              {/* Content header */}
+              <div className="mb-8">
+                <h1 className="text-2xl font-bold text-blue-900">
+                  {currentStep === 1 && "Tell us about yourself"}
+                  {currentStep === 2 && "Share your project details"}
+                  {currentStep === 3 && "What's your work experience?"}
+                  {currentStep === 4 && "What skills do you have?"}
+                </h1>
+                <p className="text-blue-600 mt-2">
+                  {currentStep === 1 && "Complete your profile to get started"}
+                  {currentStep === 2 &&
+                    "Tell us about a significant project you've worked on"}
+                  {currentStep === 3 && "Share your professional background"}
+                  {currentStep === 4 && "Add skills to showcase your expertise"}
+                </p>
+              </div>
 
-            {/* Form content */}
-            <div className="bg-white rounded-xl border shadow-lg p-8 mb-8">
-              {currentStep === 1 && (
-                <PersonalInfoForm data={formData.personal} />
-              )}
-              {currentStep === 2 && <ProjectForm data={formData.project} />}
-              {currentStep === 3 && (
-                <ExperienceForm data={formData.experience} />
-              )}
-              {currentStep === 4 && <SkillsForm data={formData.skills} />}
-            </div>
+              {/* Form content */}
+              <div className="bg-white rounded-xl border shadow-lg p-8 mb-8">
+                {currentStep === 1 && (
+                  <PersonalInfoForm
+                    data={formData.personal}
+                    setFormData={setFormData}
+                  />
+                )}
+                {currentStep === 2 && (
+                  <ProjectForm
+                    data={formData.projects}
+                    setFormData={setFormData}
+                  />
+                )}
+                {currentStep === 3 && (
+                  <ExperienceForm
+                    data={formData.experience}
+                    setFormData={setFormData}
+                  />
+                )}
+                {currentStep === 4 && (
+                  <SkillsForm
+                    data={formData.skills}
+                    setFormData={setFormData}
+                  />
+                )}
+              </div>
 
-            {/* Navigation buttons */}
-            <div className="flex justify-between">
-              <Button
-                onClick={handlePrev}
-                disabled={currentStep === 1}
-                variant="outline"
-                className="text-black w-32"
-              >
-                Previous
-              </Button>
-
-              {currentStep < 4 ? (
+              {/* Navigation buttons */}
+              <div className="flex justify-between">
                 <Button
-                  onClick={handleNext}
-                  className="bg-blue-500 hover:bg-blue-600 text-white w-32"
+                  onClick={handlePrev}
+                  disabled={currentStep === 1}
+                  variant="outline"
+                  className="text-black w-32"
                 >
-                  Next
+                  Previous
                 </Button>
-              ) : (
-                <Button
-                  onClick={handleSubmit}
-                  className="bg-blue-500 hover:bg-blue-600 text-white w-32"
-                >
-                  Complete
-                </Button>
-              )}
-            </div>
 
-            {/* Progress indicators */}
-            <div className="flex justify-center mt-8 gap-2">
-              {steps.map((step) => (
-                <div
-                  key={step.id}
-                  className={`h-1.5 rounded-full ${
-                    step.id === currentStep
-                      ? "w-8 bg-blue-500"
-                      : step.id < currentStep
-                      ? "w-8 bg-blue-300"
-                      : "w-8 bg-gray-200"
-                  }`}
-                />
-              ))}
+                {currentStep < 4 ? (
+                  <Button
+                    onClick={handleNext}
+                    className="bg-blue-500 hover:bg-blue-600 text-white w-32"
+                  >
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    className="bg-blue-500 hover:bg-blue-600 text-white w-32"
+                  >
+                    Complete
+                  </Button>
+                )}
+              </div>
+
+              {/* Progress indicators */}
+              <div className="flex justify-center mt-8 gap-2">
+                {steps.map((step) => (
+                  <div
+                    key={step.id}
+                    className={`h-1.5 rounded-full ${
+                      step.id === currentStep
+                        ? "w-8 bg-blue-500"
+                        : step.id < currentStep
+                        ? "w-8 bg-blue-300"
+                        : "w-8 bg-gray-200"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
+      </ScrollArea>
     </div>
   );
 }
