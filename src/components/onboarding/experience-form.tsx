@@ -1,24 +1,38 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useState, useEffect } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-export default function ExperienceForm({ data, updateData }) {
-  const [formState, setFormState] = useState(data)
+interface ExperienceFormProps {
+  data: {
+    company: string;
+    position: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+  };
+  updateData: (data: any) => void;
+}
+
+export default function ExperienceForm({
+  data,
+  updateData,
+}: ExperienceFormProps) {
+  const [formState, setFormState] = useState(data);
 
   useEffect(() => {
-    updateData(formState)
-  }, [formState, updateData])
+    updateData(formState);
+  }, [formState, updateData]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
     setFormState((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="space-y-6">
@@ -97,10 +111,11 @@ export default function ExperienceForm({ data, updateData }) {
             onChange={handleChange}
             className=""
           />
-          <p className="text-xs text-blue-600">Leave empty if you currently work here</p>
+          <p className="text-xs text-blue-600">
+            Leave empty if you currently work here
+          </p>
         </div>
       </div>
     </div>
-  )
+  );
 }
-

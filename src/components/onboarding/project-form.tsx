@@ -1,24 +1,34 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { useState, useEffect } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-export default function ProjectForm({ data, updateData }) {
-  const [formState, setFormState] = useState(data)
+interface ProjectFormProps {
+  data: {
+    name: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+  };
+  updateData: (data: any) => void;
+}
+
+export default function ProjectForm({ data, updateData }: ProjectFormProps) {
+  const [formState, setFormState] = useState(data);
 
   useEffect(() => {
-    updateData(formState)
-  }, [formState, updateData])
+    updateData(formState);
+  }, [formState, updateData]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
     setFormState((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="space-y-6">
@@ -80,10 +90,11 @@ export default function ProjectForm({ data, updateData }) {
             onChange={handleChange}
             className=""
           />
-          <p className="text-xs text-blue-600">Leave empty if this is an ongoing project</p>
+          <p className="text-xs text-blue-600">
+            Leave empty if this is an ongoing project
+          </p>
         </div>
       </div>
     </div>
-  )
+  );
 }
-

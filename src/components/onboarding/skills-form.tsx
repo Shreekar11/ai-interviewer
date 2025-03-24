@@ -1,35 +1,42 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { PlusCircle, X, Lightbulb } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, X } from "lucide-react";
 
-export default function SkillsForm({ data, updateData }) {
-  const [skills, setSkills] = useState(data.length ? data : [{ name: "" }])
+interface SkillsFormProps {
+  data: {
+    name: string;
+  }[];
+  updateData: (data: any) => void;
+}
+
+export default function SkillsForm({ data, updateData }: SkillsFormProps) {
+  const [skills, setSkills] = useState(data.length ? data : [{ name: "" }]);
 
   useEffect(() => {
-    updateData(skills)
-  }, [skills, updateData])
+    updateData(skills);
+  }, [skills, updateData]);
 
-  const handleSkillChange = (index, value) => {
-    const updatedSkills = [...skills]
-    updatedSkills[index].name = value
-    setSkills(updatedSkills)
-  }
+  const handleSkillChange = (index: number, value: string) => {
+    const updatedSkills = [...skills];
+    updatedSkills[index].name = value;
+    setSkills(updatedSkills);
+  };
 
   const addSkill = () => {
-    setSkills([...skills, { name: "" }])
-  }
+    setSkills([...skills, { name: "" }]);
+  };
 
-  const removeSkill = (index) => {
+  const removeSkill = (index: number) => {
     if (skills.length > 1) {
-      const updatedSkills = [...skills]
-      updatedSkills.splice(index, 1)
-      setSkills(updatedSkills)
+      const updatedSkills = [...skills];
+      updatedSkills.splice(index, 1);
+      setSkills(updatedSkills);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -72,6 +79,5 @@ export default function SkillsForm({ data, updateData }) {
         Add Another Skill
       </Button>
     </div>
-  )
+  );
 }
-

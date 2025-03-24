@@ -23,7 +23,6 @@ import {
   UserCircle,
   ArrowLeft,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 
 const steps = [
@@ -83,14 +82,14 @@ export default function OnboardingPage() {
     skills: [{ name: "" }],
   });
 
-  const updateFormData = (section, data) => {
+  const updateFormData = (section: any, data: (data: any) => void) => {
     setFormData((prev) => ({
       ...prev,
       [section]: data,
     }));
   };
 
-  const handleStepChange = (stepId) => {
+  const handleStepChange = (stepId: number) => {
     setCurrentStep(stepId);
   };
 
