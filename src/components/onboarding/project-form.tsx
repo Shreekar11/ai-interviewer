@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Profile } from "@/types";
+import { Button } from "../ui/button";
+import { PlusCircle } from "lucide-react";
 
 interface Projects {
   name: string;
@@ -112,23 +114,27 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
             </div>
           </div>
 
-          <button
+          <Button
             type="button"
+            variant="ghost"
             onClick={() => removeProject(index)}
-            className="text-red-600 hover:text-red-800 text-sm"
+            disabled={data.length === 1}
+            className="text-red-700 hover:text-red-900 hover:bg-red-50"
           >
             Remove Project
-          </button>
+          </Button>
         </div>
       ))}
 
-      <button
+      <Button
         type="button"
+        variant="outline"
         onClick={addProject}
-        className="bg-blue-600 text-white px-4 py-2 rounded-md"
+        className="mt-2 flex items-center gap-2"
       >
-        + Add Another Project
-      </button>
+        <PlusCircle className="h-4 w-4" />
+        Add Another Project
+      </Button>
     </div>
   );
 }

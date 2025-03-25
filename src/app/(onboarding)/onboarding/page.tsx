@@ -160,7 +160,8 @@ export default function OnboardingPage() {
               >
                 <StepperTrigger asChild>
                   <div className="flex items-start gap-4 cursor-pointer w-full">
-                    <StepperIndicator className="data-[state=active]:bg-blue-500 data-[state=completed]:bg-blue-500 mt-0.5">
+                    <StepperIndicator className="data-[state=active]:bg-blue-500 
+                    data-[state=completed]:bg-blue-500 mt-0.5">
                       <step.icon className="h-4 w-4" />
                     </StepperIndicator>
                     <div className="flex flex-col items-start">
@@ -185,7 +186,8 @@ export default function OnboardingPage() {
           <Button
             variant={"ghost"}
             onClick={() => router.push("/")}
-            className="w-full flex items-center text-sm hover:text-white-600 bg-blue-500 hover:bg-blue-600 text-white"
+            className="w-full flex items-center text-sm hover:text-white-600 
+            bg-blue-500 hover:bg-blue-600 text-white"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to home
