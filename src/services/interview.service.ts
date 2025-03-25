@@ -69,3 +69,200 @@ export class InterviewService {
     return interviewDetails;
   }
 }
+
+// services/interview.service.ts
+
+// import { createClient } from "../../supabase/client";
+// import { generatePersonalQuestions } from "@/utils/generatePersonalQuestions";
+
+// interface InterviewData {
+//   name: string;
+//   type: InterviewType;
+//   questions: string[];
+//   skills?: string[];
+//   jobDescription?: string;
+// }
+
+// // Enum for interview type (based on your schema)
+// export enum InterviewType {
+//   PERSONAL = "PERSONAL",
+//   CUSTOM = "CUSTOM",
+// }
+
+// export const saveInterviewToSupabase = async (
+//   interviewData: InterviewData,
+//   setError: (error: string | null) => void
+// ) => {
+//   try {
+//     const supabase = await createClient();
+//     const session = await supabase.auth.getUser();
+
+//     const {
+//       data: { user },
+//     } = session;
+
+//     if (!user) {
+//       throw new Error("No user found");
+//     }
+//     if (interviewData.type === InterviewType.PERSONAL) {
+//         // Fetch user profile details
+//         const { data: profileData, error: profileError } = await supabase
+//           .from("profiles")
+//           .select("experience, projects, skills")
+//           .eq("fkUserId", user.id)
+//           .single();
+      
+//         if (profileError) {
+//           throw new Error(`Error fetching profile: ${profileError.message}`);
+//         }
+      
+//         if (!profileData) {
+//           throw new Error("User profile not found");
+//         }
+      
+//         // Extract profile data
+//         const { experience, projects, skills } = profileData;
+      
+//         const questions = await generatePersonalQuestions(experience, projects, skills);
+      
+
+//         interviewData.questions = questions;
+//         interviewData.skills = skills.map((skill: { name: string }) => skill.name);
+//       }
+
+//     const { error: supabaseError } = await supabase.from("interviews").insert({
+//       fkUserId: user.id,
+//       name: interviewData.name,
+//       type: interviewData.type,
+//       questions: interviewData.questions,
+//       skills: interviewData.skills || [],
+//       jobDescription: interviewData.jobDescription || null,
+//       createdAt: new Date(),
+//     });
+
+//     if (supabaseError) {
+//       throw new Error(`Supabase error: ${supabaseError.message}`);
+//     }
+    
+//     return { success: true };
+//   } catch (err: any) {
+//     setError(err.message || "An error occurred while saving the interview");
+//     console.error("Error: ", err);
+//     throw err;
+//   }
+// };
+
+// export const getInterviewsByUser = async (
+//   setError: (error: string | null) => void
+// ) => {
+//   try {
+//     const supabase = await createClient();
+//     const session = await supabase.auth.getUser();
+
+//     const {
+//       data: { user },
+//     } = session;
+
+//     if (!user) {
+//       throw new Error("No user found");
+//     }
+
+//     const { data: interviews, error: supabaseError } = await supabase
+//       .from("interviews")
+//       .select("*")
+//       .eq("fkUserId", user.id);
+
+//     if (supabaseError) {
+//       throw new Error(`Supabase error: ${supabaseError.message}`);
+//     }
+
+//     return interviews;
+//   } catch (err: any) {
+//     setError(err.message || "An error occurred while fetching interviews");
+//     console.error("Error: ", err);
+//     throw err;
+//   }
+// };
+
+// export const getInterviewById = async (
+//   interviewId: string,
+//   setError: (error: string | null) => void
+// ) => {
+//   try {
+//     const supabase = await createClient();
+    
+//     const { data: interview, error: supabaseError } = await supabase
+//       .from("interviews")
+//       .select("*")
+//       .eq("id", interviewId)
+//       .single();
+
+//     if (supabaseError) {
+//       throw new Error(`Supabase error: ${supabaseError.message}`);
+//     }
+
+//     if (!interview) {
+//       throw new Error("Interview not found");
+//     }
+
+//     return interview;
+//   } catch (err: any) {
+//     setError(err.message || "An error occurred while fetching the interview");
+//     console.error("Error: ", err);
+//     throw err;
+//   }
+// };
+
+
+
+// export const deleteInterview = async (
+//   interviewId: string,
+//   setError: (error: string | null) => void
+// ) => {
+//   try {
+//     const supabase = await createClient();
+//     const session = await supabase.auth.getUser();
+
+//     const {
+//       data: { user },
+//     } = session;
+
+//     if (!user) {
+//       throw new Error("No user found");
+//     }
+
+//     // Check if the interview belongs to the user
+//     const { data: existingInterview, error: fetchError } = await supabase
+//       .from("interviews")
+//       .select("fkUserId")
+//       .eq("id", interviewId)
+//       .single();
+
+//     if (fetchError) {
+//       throw new Error(`Supabase error: ${fetchError.message}`);
+//     }
+
+//     if (!existingInterview) {
+//       throw new Error("Interview not found");
+//     }
+
+//     if (existingInterview.fkUserId !== user.id) {
+//       throw new Error("You don't have permission to delete this interview");
+//     }
+
+//     const { error: deleteError } = await supabase
+//       .from("interviews")
+//       .delete()
+//       .eq("id", interviewId);
+
+//     if (deleteError) {
+//       throw new Error(`Supabase error: ${deleteError.message}`);
+//     }
+
+//     return { success: true };
+//   } catch (err: any) {
+//     setError(err.message || "An error occurred while deleting the interview");
+//     console.error("Error: ", err);
+//     throw err;
+//   }
+// };
