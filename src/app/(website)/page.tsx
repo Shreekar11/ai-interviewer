@@ -6,6 +6,7 @@ import { ArrowRight, ArrowRightIcon } from "lucide-react";
 import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function LandingPage() {
   // Animation variants for text elements
@@ -50,52 +51,17 @@ export default function LandingPage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="flex items-center"
             >
-              <svg
-                width="36"
-                height="36"
-                viewBox="0 0 36 36"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-2"
-              >
-                <path
-                  d="M18 3C9.716 3 3 9.716 3 18C3 26.284 9.716 33 18 33C26.284 33 33 26.284 33 18C33 9.716 26.284 3 18 3Z"
-                  fill="#E6F0FF"
-                />
-                <path
-                  d="M18 6C11.373 6 6 11.373 6 18C6 24.627 11.373 30 18 30C24.627 30 30 24.627 30 18C30 11.373 24.627 6 18 6Z"
-                  fill="#2563EB"
-                />
-                <path
-                  d="M18 9C13.029 9 9 13.029 9 18C9 22.971 13.029 27 18 27C22.971 27 27 22.971 27 18C27 13.029 22.971 9 18 9Z"
-                  fill="#1E40AF"
-                />
-                <path
-                  d="M18 12C14.686 12 12 14.686 12 18C12 21.314 14.686 24 18 24C21.314 24 24 21.314 24 18C24 14.686 21.314 12 18 12Z"
-                  fill="#3B82F6"
-                />
-                <path
-                  d="M22 18C22 20.209 20.209 22 18 22C15.791 22 14 20.209 14 18C14 15.791 15.791 14 18 14C20.209 14 22 15.791 22 18Z"
-                  fill="#FFFFFF"
-                />
-                <path
-                  d="M26 14L28 18L26 22"
-                  stroke="#FFFFFF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 14L8 18L10 22"
-                  stroke="#FFFFFF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+              {" "}
+              <Image
+                src="/assets/logo.png"
+                alt="logo"
+                height={30}
+                width={30}
+                className="px-1"
+              />
               <div className="text-2xl font-bold text-blue-600">
-                <span className="font-bold tracking-tight">Prep</span>
-                <span className="font-bold tracking-tight text-blue-800">
-                  Pulse
-                </span>
+                <span className="tracking-tight">Interview</span>
+                <span className="tracking-tight text-blue-800">Prep</span>
               </div>
             </motion.div>
           </div>

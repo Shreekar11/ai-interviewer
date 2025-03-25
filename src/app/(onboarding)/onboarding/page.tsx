@@ -90,7 +90,9 @@ export default function OnboardingPage() {
     let errorMsg = "";
     if (
       currentStep === 1 &&
-      (!formData.personal.firstName || !formData.personal.lastName)
+      (!formData.personal.firstName ||
+        !formData.personal.lastName ||
+        !formData.personal.aboutMe)
     ) {
       errorMsg = "Please fill in your personal information.";
     } else if (
@@ -186,6 +188,18 @@ export default function OnboardingPage() {
             ))}
           </Stepper>
         </div>
+
+        <div className="p-6 mt-auto">
+          <Button
+            variant={"ghost"}
+            onClick={() => router.push("/")}
+            className="w-full flex items-center text-sm hover:text-white-600 
+            bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to home
+          </Button>
+        </div>
       </div>
 
       <ScrollArea className="flex-1 flex flex-col w-full h-screen">
@@ -209,7 +223,7 @@ export default function OnboardingPage() {
             </div>
 
             {errors && (
-              <p className="bg-red-50 rounded-lg shadow-lg p-2 text-red-500 mb-4">
+              <p className="bg-red-50 rounded-lg shadow-md p-2 text-red-500 mb-4">
                 {errors}
               </p>
             )}
