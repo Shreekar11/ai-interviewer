@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Profile } from "@/types";
+import { ProfileType } from "@/types";
 
 interface PersonalInfoFormProps {
   data: {
@@ -12,7 +12,7 @@ interface PersonalInfoFormProps {
     lastName: string;
     aboutMe: string;
   };
-  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
+  setFormData: React.Dispatch<React.SetStateAction<ProfileType>>;
 }
 
 export default function PersonalInfoForm({

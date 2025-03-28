@@ -3,7 +3,7 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Profile } from "@/types";
+import { ProfileType } from "@/types";
 import { Button } from "../ui/button";
 import { PlusCircle } from "lucide-react";
 
@@ -15,7 +15,7 @@ interface Projects {
 }
 interface ProjectFormProps {
   data: Projects[];
-  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
+  setFormData: React.Dispatch<React.SetStateAction<ProfileType>>;
 }
 
 export default function ProjectForm({ data, setFormData }: ProjectFormProps) {

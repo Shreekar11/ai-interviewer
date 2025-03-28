@@ -5,13 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, X } from "lucide-react";
-import { Profile } from "@/types";
+import { ProfileType } from "@/types";
 
 interface SkillsFormProps {
   data: {
     name: string;
   }[];
-  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
+  setFormData: React.Dispatch<React.SetStateAction<ProfileType>>;
 }
 
 export default function SkillsForm({ data, setFormData }: SkillsFormProps) {

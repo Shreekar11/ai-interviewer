@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Profile } from "@/types";
+import { ProfileType } from "@/types";
 
 const steps = [
   {
@@ -69,7 +69,7 @@ export default function OnboardingPage() {
   }, [page]);
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<Profile>({
+  const [formData, setFormData] = useState<ProfileType>({
     personal: { firstName: "", lastName: "", aboutMe: "" },
     projects: [{ name: "", description: "", startDate: "", endDate: "" }],
     experience: [
