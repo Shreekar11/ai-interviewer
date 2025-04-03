@@ -20,10 +20,7 @@ export default function PersonalInfoForm({
 }: PersonalInfoFormProps) {
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -35,7 +32,7 @@ export default function PersonalInfoForm({
           </Label>
           <Input
             id="firstName"
-            name="firstName"
+            name="first_name"
             value={first_name}
             onChange={handleChange}
             placeholder="Enter your first name"
@@ -50,7 +47,7 @@ export default function PersonalInfoForm({
           </Label>
           <Input
             id="lastName"
-            name="lastName"
+            name="last_name"
             value={last_name}
             onChange={handleChange}
             placeholder="Enter your last name"
@@ -66,7 +63,7 @@ export default function PersonalInfoForm({
         </Label>
         <Textarea
           id="aboutMe"
-          name="aboutMe"
+          name="about_me"
           value={about_me}
           onChange={handleChange}
           placeholder="Tell us about yourself, your interests, and your goals..."

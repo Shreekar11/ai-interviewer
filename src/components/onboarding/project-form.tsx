@@ -59,7 +59,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
             </Label>
             <Input
               id={`name-${index}`}
-              name="name"
+              name="project_name"
               value={project.project_name}
               onChange={(e) => handleChange(index, e)}
               placeholder="Enter project name"
@@ -89,7 +89,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
               </Label>
               <Input
                 id={`startDate-${index}`}
-                name="startDate"
+                name="start_date"
                 type="date"
                 value={project.start_date}
                 onChange={(e) => handleChange(index, e)}
@@ -103,7 +103,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
               </Label>
               <Input
                 id={`endDate-${index}`}
-                name="endDate"
+                name="end_date"
                 type="date"
                 value={project.end_date}
                 onChange={(e) => handleChange(index, e)}

@@ -134,7 +134,7 @@ export default function ExperienceForm({
               </Label>
               <Input
                 id={`startDate-${index}`}
-                name="startDate"
+                name="start_date"
                 type="date"
                 value={experience.start_date}
                 onChange={(e) => handleExperienceChange(index, e)}
@@ -148,7 +148,7 @@ export default function ExperienceForm({
               </Label>
               <Input
                 id={`endDate-${index}`}
-                name="endDate"
+                name="end_date"
                 type="date"
                 value={experience.end_date}
                 onChange={(e) => handleExperienceChange(index, e)}

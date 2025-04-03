@@ -24,5 +24,5 @@ export interface Project {
 }
 
 export interface Skill {
-  name: string;
+  skill_name: string;
 }

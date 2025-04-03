@@ -86,7 +86,7 @@ export default function OnboardingPage() {
         end_date: "",
       },
     ],
-    skills: [{ name: "" }],
+    skills: [{ skill_name: "" }],
   });
 
   const [errors, setErrors] = useState<string | null>(null);
@@ -112,7 +112,7 @@ export default function OnboardingPage() {
       errorMsg = "Please complete your work experience.";
     } else if (
       currentStep === 4 &&
-      formData.skills.some((skill) => !skill.name)
+      formData.skills.some((skill) => !skill.skill_name)
     ) {
       errorMsg = "Please add at least one skill.";
     }
@@ -141,6 +141,35 @@ export default function OnboardingPage() {
       setCurrentStep(prevStep);
       const newStep = steps.find((step) => step.id === prevStep);
       router.push(`/onboarding?page=${newStep?.slug}`);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const profileService = new ProfileService();
+      const result = await profileService.createProfile({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        about_me: formData.about_me,
+        experience: formData.experience,
+        projects: formData.projects,
+        skills: formData.skills,
+      });
+
+      if (result.status === "success") {
+        // Show success message
+        router.push("/dashboard");
+      } else {
+        // Show error message
+
+        if (result.error === "AUTH_ERROR") {
+          router.push("/sign-in");
+        } else if (result.error === "DUPLICATE_PROFILE") {
+          router.push("/profile");
+        }
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || "Failed to save profile";
     }
   };
 
@@ -264,12 +293,21 @@ export default function OnboardingPage() {
               >
                 Previous
               </Button>
-              <Button
-                onClick={handleNext}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
-              >
-                {currentStep < 4 ? "Next" : "Complete"}
-              </Button>
+              {currentStep < 4 ? (
+                <Button
+                  onClick={handleNext}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSubmit}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Complete
+                </Button>
+              )}
             </div>
           </div>
         </main>

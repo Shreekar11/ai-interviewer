@@ -8,81 +8,162 @@ export class ProfileService {
   /**
    * Create a new profile for the current user
    * @param data Profile data to create
-   * @returns The created profile
+   * @returns The created profile or error information
    */
   public async createProfile(data: Profile) {
-    const { first_name, last_name, about_me, experience, projects, skills } =
-      data;
+    try {
+      const { first_name, last_name, about_me, experience, projects, skills } =
+        data;
 
-    const supabase = createClient();
-    const session = await supabase.auth.getUser();
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    const {
-      data: { user },
-    } = session;
+      if (!session) {
+        return {
+          status: "error",
+          message: "No active session found. Please sign in again.",
+          error: "AUTH_ERROR",
+        };
+      }
 
-    if (!user) {
-      throw new Error("No user found");
+      // Get the current auth user ID
+      const authUserId = session.user.id;
+
+      // Get the user record to get the correct user ID from users table
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("auth_id", authUserId)
+        .single();
+
+      if (userError || !userData) {
+        return {
+          status: "error",
+          message: `User account not found: ${
+            userError?.message || "Please complete registration"
+          }`,
+          error: "USER_NOT_FOUND",
+        };
+      }
+
+      const userId = userData.id;
+
+      // Now use the correct user ID from the users table
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .insert({
+          fk_user_id: userId,
+          first_name,
+          last_name,
+          about_me,
+        })
+        .select("*")
+        .single();
+
+      if (profileError) {
+        // Handle specific error types
+        if (profileError.code === "23505") {
+          return {
+            status: "error",
+            message: "You already have a profile. Try updating instead.",
+            error: "DUPLICATE_PROFILE",
+          };
+        } else if (
+          profileError.message.includes("violates row-level security policy")
+        ) {
+          return {
+            status: "error",
+            message:
+              "You don't have permission to create this profile. Please contact support.",
+            error: "PERMISSION_DENIED",
+          };
+        } else {
+          return {
+            status: "error",
+            message: `Error creating profile: ${profileError.message}`,
+            error: "PROFILE_ERROR",
+          };
+        }
+      }
+
+      const profileId = profile.id;
+
+      try {
+        const insertExperiences = experience.map((exp) => ({
+          ...exp,
+          fk_profile_id: profileId,
+        }));
+
+        if (insertExperiences.length > 0) {
+          const { error: experienceError } = await supabase
+            .from("experiences")
+            .insert(insertExperiences);
+
+          if (experienceError) {
+            throw new Error(
+              `Error adding experiences: ${experienceError.message}`
+            );
+          }
+        }
+
+        const insertProjects = projects.map((proj) => ({
+          ...proj,
+          fk_profile_id: profileId,
+        }));
+
+        if (insertProjects.length > 0) {
+          const { error: projectError } = await supabase
+            .from("projects")
+            .insert(insertProjects);
+
+          if (projectError) {
+            throw new Error(`Error adding projects: ${projectError.message}`);
+          }
+        }
+
+        const insertSkills = skills.map((skill) => ({
+          ...skill,
+          fk_profile_id: profileId,
+        }));
+
+        if (insertSkills.length > 0) {
+          const { error: skillError } = await supabase
+            .from("skills")
+            .insert(insertSkills);
+
+          if (skillError) {
+            throw new Error(`Error adding skills: ${skillError.message}`);
+          }
+        }
+
+        return {
+          status: "success",
+          message: "Profile saved successfully!",
+          data: profile,
+        };
+      } catch (error: any) {
+        // Delete the profile if associated data failed to insert
+        await supabase.from("profiles").delete().eq("id", profileId);
+
+        return {
+          status: "error",
+          message: error.message || "Error saving profile details",
+          error: "RELATED_DATA_ERROR",
+        };
+      }
+    } catch (error: any) {
+      // Catch any unexpected errors
+      console.error("Profile creation error:", error);
+      return {
+        status: "error",
+        message:
+          error.message ||
+          "An unexpected error occurred while creating your profile",
+        error: "UNKNOWN_ERROR",
+      };
     }
-
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .insert({
-        first_name,
-        last_name,
-        about_me,
-      })
-      .select("*")
-      .single();
-
-    if (profileError) {
-      throw new Error(`Error inserting profile: ${profileError.message}`);
-    }
-
-    const profileId = profile.id;
-
-    const insertExperiences = experience.map((exp) => ({
-      ...exp,
-      fk_profile_id: profileId,
-    }));
-
-    const insertProjects = projects.map((proj) => ({
-      ...proj,
-      fk_profile_id: profileId,
-    }));
-
-    const insertSkills = skills.map((skill) => ({
-      ...skill,
-      fk_profile_id: profileId,
-    }));
-
-    const { error: experienceError } = await supabase
-      .from("experiences")
-      .insert(insertExperiences);
-
-    if (experienceError) {
-      throw new Error(
-        `Error inserting experiences: ${experienceError.message}`
-      );
-    }
-
-    const { error: projectError } = await supabase
-      .from("projects")
-      .insert(insertProjects);
-
-    if (projectError) {
-      throw new Error(`Error inserting projects: ${projectError.message}`);
-    }
-
-    const { error: skillError } = await supabase
-      .from("skills")
-      .insert(insertSkills);
-
-    if (skillError) {
-      throw new Error(`Error inserting skills: ${skillError.message}`);
-    }
-
-    return profile;
   }
 
   /**
