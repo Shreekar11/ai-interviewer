@@ -3,19 +3,19 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ProfileType } from "@/types";
+import { Profile } from "@/types";
 import { Button } from "../ui/button";
 import { PlusCircle } from "lucide-react";
 
 interface Projects {
-  name: string;
+  project_name: string;
   description: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 }
 interface ProjectFormProps {
   data: Projects[];
-  setFormData: React.Dispatch<React.SetStateAction<ProfileType>>;
+  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
 }
 
 export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
@@ -37,7 +37,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
       ...prev,
       projects: [
         ...prev.projects,
-        { name: "", description: "", startDate: "", endDate: "" },
+        { project_name: "", description: "", start_date: "", end_date: "" },
       ],
     }));
   };
@@ -60,7 +60,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
             <Input
               id={`name-${index}`}
               name="name"
-              value={project.name}
+              value={project.project_name}
               onChange={(e) => handleChange(index, e)}
               placeholder="Enter project name"
               required
@@ -91,7 +91,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
                 id={`startDate-${index}`}
                 name="startDate"
                 type="date"
-                value={project.startDate}
+                value={project.start_date}
                 onChange={(e) => handleChange(index, e)}
                 required
               />
@@ -105,7 +105,7 @@ export default function ProjectForm({ data, setFormData }: ProjectFormProps) {
                 id={`endDate-${index}`}
                 name="endDate"
                 type="date"
-                value={project.endDate}
+                value={project.end_date}
                 onChange={(e) => handleChange(index, e)}
               />
               <p className="text-xs text-blue-600">

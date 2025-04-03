@@ -10,7 +10,7 @@ export class ProfileService {
    * @param data Profile data to create
    * @returns The created profile
    */
-  static async createProfile(data: Profile) {
+  public async createProfile(data: Profile) {
     const { first_name, last_name, about_me, experience, projects, skills } =
       data;
 
@@ -89,7 +89,7 @@ export class ProfileService {
    * Get the profile for the current user
    * @returns The profile with related data
    */
-  static async getProfileByUserId() {
+  public async getProfileByUserId() {
     const supabase = createClient();
 
     // Get the current user
@@ -128,7 +128,7 @@ export class ProfileService {
    * @param data Updated profile data
    * @returns The updated profile with related data
    */
-  static async updateProfile(data: Profile) {
+  public async updateProfile(data: Profile) {
     const {
       id,
       first_name,

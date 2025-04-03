@@ -6,19 +6,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, X } from "lucide-react";
-import { ProfileType } from "@/types";
+import { Profile } from "@/types";
 
 interface Experience {
   company: string;
   position: string;
   description: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 }
 
 interface ExperienceFormProps {
   data: Experience[];
-  setFormData: React.Dispatch<React.SetStateAction<ProfileType>>;
+  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
 }
 
 export default function ExperienceForm({
@@ -33,8 +33,8 @@ export default function ExperienceForm({
             company: "",
             position: "",
             description: "",
-            startDate: "",
-            endDate: "",
+            start_date: "",
+            end_date: "",
           },
         ]
   );
@@ -56,8 +56,8 @@ export default function ExperienceForm({
         company: "",
         position: "",
         description: "",
-        startDate: "",
-        endDate: "",
+        start_date: "",
+        end_date: "",
       },
     ]);
   };
@@ -136,7 +136,7 @@ export default function ExperienceForm({
                 id={`startDate-${index}`}
                 name="startDate"
                 type="date"
-                value={experience.startDate}
+                value={experience.start_date}
                 onChange={(e) => handleExperienceChange(index, e)}
                 required
               />
@@ -150,7 +150,7 @@ export default function ExperienceForm({
                 id={`endDate-${index}`}
                 name="endDate"
                 type="date"
-                value={experience.endDate}
+                value={experience.end_date}
                 onChange={(e) => handleExperienceChange(index, e)}
               />
               <p className="text-xs text-blue-600">
