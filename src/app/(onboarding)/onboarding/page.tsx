@@ -27,6 +27,7 @@ import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Profile } from "@/types";
 import { ProfileService } from "@/services/profile.service";
+import { toast } from "sonner";
 
 const steps = [
   {
@@ -158,10 +159,11 @@ export default function OnboardingPage() {
 
       if (result.status === "success") {
         // Show success message
+        toast.success("Profile completed successfully!");
         router.push("/dashboard");
       } else {
         // Show error message
-
+        toast.error(result.message);
         if (result.error === "AUTH_ERROR") {
           router.push("/sign-in");
         } else if (result.error === "DUPLICATE_PROFILE") {
@@ -170,6 +172,7 @@ export default function OnboardingPage() {
       }
     } catch (err: any) {
       const errorMessage = err.message || "Failed to save profile";
+      toast.error(errorMessage);
     }
   };
 
