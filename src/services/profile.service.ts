@@ -1,5 +1,5 @@
 import { Profile } from "@/types";
-import { createClient } from "../../supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 /**
  * Service for handling profile-related database operations
