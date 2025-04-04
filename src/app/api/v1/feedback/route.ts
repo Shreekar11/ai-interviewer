@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
     const result = parseInterviewFeedback(feedbacks || []);
 
     // Use the interview service to save feedback data
-    await InterviewService.saveFeedbackData(interviewId, result);
+    const interviewService = new InterviewService();
+    await interviewService.saveFeedbackData(interviewId, result);
 
     return NextResponse.json({
       status: true,

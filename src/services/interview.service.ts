@@ -104,7 +104,7 @@ export class InterviewService {
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("experience, projects, skills")
-          .eq("fkUserId", user.id)
+          .eq("fk_user_id", user.id)
           .single();
 
         if (profileError) {
@@ -133,7 +133,7 @@ export class InterviewService {
       const { error: supabaseError } = await supabase
         .from("interviews")
         .insert({
-          fkUserId: user.id,
+          fk_user_id: user.id,
           name: interviewData.name,
           type: interviewData.type,
           questions: interviewData.questions,

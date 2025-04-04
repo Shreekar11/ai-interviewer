@@ -15,8 +15,6 @@ export async function GET(req: NextRequest) {
   const supabase = createClient();
   const session = (await supabase).auth.getUser();
 
-  console.log(session);
-
   const url = new URL(req.url);
   const interviewId = url.searchParams.get("id");
 
