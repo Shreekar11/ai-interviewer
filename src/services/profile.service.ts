@@ -12,8 +12,15 @@ export class ProfileService {
    */
   public async createProfile(data: Profile) {
     try {
-      const { first_name, last_name, about_me, experience, projects, skills } =
-        data;
+      const {
+        first_name,
+        last_name,
+        about_me,
+        profile_image,
+        experience,
+        projects,
+        skills,
+      } = data;
 
       const supabase = createClient();
       const {
@@ -58,6 +65,7 @@ export class ProfileService {
           first_name,
           last_name,
           about_me,
+          profile_image,
         })
         .select("*")
         .single();

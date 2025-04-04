@@ -75,6 +75,7 @@ export default function OnboardingPage() {
     first_name: "",
     last_name: "",
     about_me: "",
+    profile_image: "",
     projects: [
       { project_name: "", description: "", start_date: "", end_date: "" },
     ],
@@ -152,6 +153,7 @@ export default function OnboardingPage() {
         first_name: formData.first_name,
         last_name: formData.last_name,
         about_me: formData.about_me,
+        profile_image: formData.profile_image,
         experience: formData.experience,
         projects: formData.projects,
         skills: formData.skills,
@@ -269,6 +271,7 @@ export default function OnboardingPage() {
                   first_name={formData.first_name}
                   last_name={formData.last_name}
                   about_me={formData.about_me}
+                  profile_image={formData.profile_image}
                   setFormData={setFormData}
                 />
               )}
