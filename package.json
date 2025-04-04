@@ -12,6 +12,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.0",
     "@livekit/components-react": "^2.9.0",
     "@livekit/components-styles": "^1.1.5",
     "@prisma/client": "^6.3.1",

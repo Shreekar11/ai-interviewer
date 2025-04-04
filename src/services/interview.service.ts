@@ -1,20 +1,7 @@
-import { InterviewFeedback } from "@/types/interview";
 import { createClient } from "@/utils/supabase/client";
-import { generatePersonalQuestions } from "@/utils/generatePersonalQuestions";
-
-interface InterviewData {
-  name: string;
-  type: InterviewType;
-  questions: string[];
-  skills?: string[];
-  jobDescription?: string;
-}
-
-// Enum for interview type (based on your schema)
-export enum InterviewType {
-  PERSONAL = "PERSONAL",
-  CUSTOM = "CUSTOM",
-}
+import { InterviewData, InterviewFeedback } from "@/types/interview";
+import { generateCustomQuestions } from "@/utils/generate-custom-question";
+import { generatePersonalQuestions } from "@/utils/generate-personal-questions";
 
 /**
  * Service for handling interview-related database operations
@@ -84,27 +71,49 @@ export class InterviewService {
     return interviewDetails;
   }
 
-  public async saveInterviewToSupabase(
-    interviewData: InterviewData,
-    setError: (error: string | null) => void
-  ) {
+  public async saveInterviewToSupabase(interviewData: InterviewData) {
     try {
-      const supabase = await createClient();
-      const session = await supabase.auth.getUser();
-
+      const supabase = createClient();
       const {
-        data: { user },
-      } = session;
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (!user) {
-        throw new Error("No user found");
+      if (!session) {
+        return {
+          status: "error",
+          message: "No active session found. Please sign in again.",
+          error: "AUTH_ERROR",
+        };
       }
-      if (interviewData.type === InterviewType.PERSONAL) {
+
+      // Get the current auth user ID
+      const authUserId = session.user.id;
+
+      // Get the user record to get the correct user ID from users table
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("auth_id", authUserId)
+        .single();
+
+      if (userError || !userData) {
+        return {
+          status: "error",
+          message: `User account not found: ${
+            userError?.message || "Please complete registration"
+          }`,
+          error: "USER_NOT_FOUND",
+        };
+      }
+
+      const userId = userData.id;
+
+      if (interviewData.type === "PERSONAL") {
         // Fetch user profile details
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("experience, projects, skills")
-          .eq("fk_user_id", user.id)
+          .eq("fk_user_id", userId)
           .single();
 
         if (profileError) {
@@ -128,27 +137,39 @@ export class InterviewService {
         interviewData.skills = skills.map(
           (skill: { name: string }) => skill.name
         );
+      } else {
+        const questions = await generateCustomQuestions(
+          interviewData.skills || [],
+          interviewData.jobDescription || ""
+        );
+
+        interviewData.questions = questions;
       }
 
-      const { error: supabaseError } = await supabase
+      const { data: interviewResult, error: supabaseError } = await supabase
         .from("interviews")
         .insert({
-          fk_user_id: user.id,
+          fk_user_id: userId,
           name: interviewData.name,
           type: interviewData.type,
           questions: interviewData.questions,
           skills: interviewData.skills || [],
-          jobDescription: interviewData.jobDescription || null,
-          createdAt: new Date(),
-        });
+          job_description: interviewData.jobDescription || [],
+          created_at: new Date(),
+        })
+        .select()
+        .single();
 
       if (supabaseError) {
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
 
-      return { success: true };
+      return {
+        success: true,
+        data: interviewResult,
+        message: "Interview created successfully!",
+      };
     } catch (err: any) {
-      setError(err.message || "An error occurred while saving the interview");
       console.error("Error: ", err);
       throw err;
     }

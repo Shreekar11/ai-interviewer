@@ -60,7 +60,7 @@ const steps = [
   },
 ];
 
-export default function OnboardingPage() {
+const OnboardingPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page");
@@ -321,3 +321,5 @@ export default function OnboardingPage() {
     </div>
   );
 }
+
+export default OnboardingPage;

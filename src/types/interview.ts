@@ -1,3 +1,11 @@
+export interface InterviewData {
+  name: string;
+  type: string;
+  questions?: string[];
+  skills?: string[];
+  jobDescription?: string;
+}
+
 /**
  * Represents a single feedback item for an interview question
  */

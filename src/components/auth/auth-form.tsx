@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { createClient } from "../../../supabase/client";
 import { Button } from "../ui/button";
+import { useSearchParams } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
   const [loading, setLoading] = useState(false);

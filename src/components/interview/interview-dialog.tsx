@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
-import { PlusCircle, X } from "lucide-react";
+import { Loader2, PlusCircle, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,11 +25,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { InterviewService } from "@/services/interview.service";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type InterviewType = "PERSONAL" | "CUSTOM";
 
 export default function InterviewDialog() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [interviewType, setInterviewType] = useState<InterviewType>("PERSONAL");
   const [formData, setFormData] = useState({
     name: "",
@@ -71,19 +76,37 @@ export default function InterviewDialog() {
     setSkills((prev) => prev.filter((skill) => skill !== skillToRemove));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", {
-      ...formData,
-      type: interviewType,
-      skills: interviewType === "CUSTOM" ? skills : [],
-    });
-    setOpen(false);
-    // Reset form
-    setFormData({ name: "", description: "" });
-    setSkills([]);
-    setCurrentSkill("");
-    setInterviewType("PERSONAL");
+
+    setIsSubmitting(true);
+
+    try {
+      const interviewService = new InterviewService();
+      const result = await interviewService.saveInterviewToSupabase({
+        name: formData.name,
+        type: interviewType,
+        skills,
+        questions: [],
+        jobDescription: formData.description,
+      });
+
+      if (!result.success) {
+        throw new Error("Error saving interview ", result.error as any);
+      }
+      // Reset form
+      setFormData({ name: "", description: "" });
+      setSkills([]);
+      setCurrentSkill("");
+      setInterviewType("PERSONAL");
+
+      toast.success(result.message);
+      router.push(`/interview/start/${result?.data?.id}`);
+    } catch (err: any) {
+      console.log("Error: ", err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -99,7 +122,7 @@ export default function InterviewDialog() {
           <DialogHeader>
             <DialogTitle>Create New Interview</DialogTitle>
             <DialogDescription>
-              Set up a new interview session. Click proceed when you're done.
+              Set up a new interview session. Click proceed when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -188,9 +211,19 @@ export default function InterviewDialog() {
             <Button
               type="submit"
               className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-              disabled={interviewType === "CUSTOM" && skills.length === 0}
+              disabled={
+                isSubmitting ||
+                (interviewType === "CUSTOM" && skills.length === 0)
+              }
             >
-              Proceed
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>Proceed</>
+              )}
             </Button>
           </DialogFooter>
         </form>

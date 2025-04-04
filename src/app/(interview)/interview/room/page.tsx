@@ -224,7 +224,7 @@ const RoomContent = () => {
 };
 
 // Main Interview Room Component
-export default function InterviewRoom() {
+const InterviewRoom = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const url = searchParams.get("url");
@@ -243,3 +243,5 @@ export default function InterviewRoom() {
     </LiveKitRoom>
   );
 }
+
+export default InterviewRoom;
