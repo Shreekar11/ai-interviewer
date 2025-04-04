@@ -26,7 +26,7 @@ export class InterviewService {
    * @param result - The parsed feedback results
    * @returns The interview details with related data
    */
-  static async saveFeedbackData(
+  public async saveFeedbackData(
     interviewId: string,
     result: InterviewFeedback
   ) {
@@ -156,21 +156,33 @@ export class InterviewService {
 
   public async getInterviewsByUser(setError: (error: string | null) => void) {
     try {
-      const supabase = await createClient();
-      const session = await supabase.auth.getUser();
+      const supabase = createClient();
 
+      // Get the current user
       const {
-        data: { user },
-      } = session;
+        data: { user: current_user },
+        error: authError,
+      } = await supabase.auth.getUser();
 
-      if (!user) {
-        throw new Error("No user found");
+      if (authError || !current_user) {
+        throw new Error("Unauthorized");
+      }
+
+      // Get user data
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("auth_id", current_user.id)
+        .single();
+
+      if (userError) {
+        throw new Error(`Error fetching profile: ${userError.message}`);
       }
 
       const { data: interviews, error: supabaseError } = await supabase
         .from("interviews")
         .select("*")
-        .eq("fkUserId", user.id);
+        .eq("fk_user_id", user.id);
 
       if (supabaseError) {
         throw new Error(`Supabase error: ${supabaseError.message}`);
@@ -219,20 +231,31 @@ export class InterviewService {
   ) {
     try {
       const supabase = await createClient();
-      const session = await supabase.auth.getUser();
-
+      // Get the current user
       const {
-        data: { user },
-      } = session;
+        data: { user: current_user },
+        error: authError,
+      } = await supabase.auth.getUser();
 
-      if (!user) {
-        throw new Error("No user found");
+      if (authError || !current_user) {
+        throw new Error("Unauthorized");
+      }
+
+      // Get user data
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("auth_id", current_user.id)
+        .single();
+
+      if (userError) {
+        throw new Error(`Error fetching profile: ${userError.message}`);
       }
 
       // Check if the interview belongs to the user
       const { data: existingInterview, error: fetchError } = await supabase
         .from("interviews")
-        .select("fkUserId")
+        .select("fk_user_id")
         .eq("id", interviewId)
         .single();
 
@@ -244,7 +267,7 @@ export class InterviewService {
         throw new Error("Interview not found");
       }
 
-      if (existingInterview.fkUserId !== user.id) {
+      if (existingInterview.fk_user_id !== user.id) {
         throw new Error("You don't have permission to delete this interview");
       }
 

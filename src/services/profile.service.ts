@@ -183,12 +183,23 @@ export class ProfileService {
 
     // Get the current user
     const {
-      data: { user },
+      data: { user: current_user },
       error: authError,
     } = await supabase.auth.getUser();
 
-    if (authError || !user) {
+    if (authError || !current_user) {
       throw new Error("Unauthorized");
+    }
+
+    // Get user data
+    const { data: user, error: userError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("auth_id", current_user.id)
+      .single();
+
+    if (userError) {
+      throw new Error(`Error fetching profile: ${userError.message}`);
     }
 
     // Get profile with related data
