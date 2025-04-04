@@ -22,12 +22,13 @@ import { useState } from "react";
 import { Home, LogOut, User, LaptopMinimal, FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useUser } from "@/context/user.context";
 
 // Main menu items
 const mainItems = [
   {
     title: "Dashboard",
-    url: "/dashboard",  
+    url: "/dashboard",
     icon: Home,
     badge: null,
   },
@@ -53,6 +54,9 @@ const mainItems = [
 
 export function AppSidebar() {
   const [activeItem, setActiveItem] = useState("Dashboard");
+  const {
+    user: { name, email, avatar },
+  } = useUser();
 
   return (
     <Sidebar className="border-r border-border bg-card">
@@ -134,20 +138,19 @@ export function AppSidebar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage
-                src="/placeholder.svg?height=36&width=36"
-                alt="User"
-              />
-              <AvatarFallback>JP</AvatarFallback>
+              <AvatarImage src={avatar || ""} alt="User" />
+              <AvatarFallback>{name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-medium">John Peterson</p>
-              <p className="text-xs text-muted-foreground">john@example.com</p>
+              <div className="flex justify-between">
+                <p className="text-sm font-medium">{name}</p>
+                <button className="rounded-md p-1 hover:bg-accent">
+                  <LogOut className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">{email}</p>
             </div>
           </div>
-          <button className="rounded-md p-1 hover:bg-accent">
-            <LogOut className="h-4 w-4 text-muted-foreground" />
-          </button>
         </div>
       </SidebarFooter>
     </Sidebar>

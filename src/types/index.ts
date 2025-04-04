@@ -27,3 +27,26 @@ export interface Project {
 export interface Skill {
   skill_name: string;
 }
+
+// Define the User type
+export interface User {
+  name: string;
+  email: string;
+  avatar: string | null;
+};
+
+// Define the UserMetadata type
+export interface UserMetadata {
+  name: string;
+  email: string;
+  avatar_url: string | null;
+};
+
+// Define the UserContext type
+export interface UserContextType {
+  user: User;
+  isLoading: boolean;
+  error: string | null;
+  refreshUser: () => Promise<void>;
+  logout: () => Promise<void>;
+};

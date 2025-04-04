@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import InterviewCard from "../interview/InterviewCard";
+import { useUser } from "@/context/user.context";
 
 interface Interview {
   id: number;
@@ -13,15 +14,9 @@ interface Interview {
   tags?: string[];
 }
 
-interface DashboardContentProps {
-  userName: string;
-}
-
-const DashboardContent = ({ userName }: DashboardContentProps) => {
+const DashboardContent = () => {
   const router = useRouter();
-
-  console.log("Router:", router); // Debugging
-
+  const { user: { name } } = useUser(); 
   const personalInterviews: Interview[] = [
     { id: 1, title: "Frontend Developer Interview", date: "12 May 2023", company: "Tech Solutions Inc." },
     { id: 2, title: "React Developer Position", date: "18 May 2023", company: "Digital Innovators" },
@@ -37,7 +32,7 @@ const DashboardContent = ({ userName }: DashboardContentProps) => {
   return (
     <div className="flex-1 p-6">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-semibold">Welcome Back, {userName}</h1>
+        <h1 className="text-2xl font-semibold">Welcome Back, {name}</h1>
         <Button className="bg-blue-500 hover:bg-blue-600 text-white">
           <PlusCircle className="mr-2 h-4 w-4" />
           New Interview
