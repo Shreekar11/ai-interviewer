@@ -1,5 +1,5 @@
 "use client";
-import DashboardContent from "@/components/layout/DashboardContent";
+import DashboardContent from "@/components/dashboard/DashboardContent";
 
 export default function DashboardPage() {
   return <DashboardContent userName="John" />;

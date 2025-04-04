@@ -3,7 +3,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import InterviewCard from "./InterviewCard";
+import InterviewCard from "../interview/InterviewCard";
 
 interface Interview {
   id: number;

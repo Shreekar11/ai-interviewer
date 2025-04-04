@@ -1,7 +1,7 @@
 "use client"; // Ensure this is a Client Component
 
 import { useParams } from "next/navigation";
-import InterviewCard from "@/components/layout/InterviewCard";
+import InterviewCard from "@/components/interview/InterviewCard";
 
 const allInterviews = {
   personal: [
