@@ -15,11 +15,13 @@ export default function MainLayout({
 }>) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main>
-        <SidebarTrigger />
-        {children}
-      </main>
+      <div className="flex min-h-screen bg-gray-50 w-full">
+        <AppSidebar />
+        <main className="flex-1 relative w-full max-w-[1200px] mx-auto">
+          <SidebarTrigger />
+          {children}
+        </main>
+      </div>
     </SidebarProvider>
   );
 }

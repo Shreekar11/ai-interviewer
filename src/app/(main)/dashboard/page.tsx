@@ -1,7 +1,7 @@
-import React from "react";
+"use client";
+import DashboardContent from "@/components/layout/DashboardContent";
 
-const DashboardPage = () => {
-  return <div></div>;
-};
+export default function DashboardPage() {
+  return <DashboardContent userName="John" />;
+}
 
-export default DashboardPage;

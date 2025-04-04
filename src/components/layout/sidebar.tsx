@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Home, LogOut, User } from "lucide-react";
+import { Home, LogOut, User, LaptopMinimal, FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 
@@ -27,7 +27,7 @@ import Link from "next/link";
 const mainItems = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/dashboard",  
     icon: Home,
     badge: null,
   },
@@ -35,6 +35,18 @@ const mainItems = [
     title: "Profile",
     url: "/profile",
     icon: User,
+    badge: null,
+  },
+  {
+    title: "Personal Interviews",
+    url: "/interviews/personal",
+    icon: LaptopMinimal,
+    badge: null,
+  },
+  {
+    title: "Custom Interviews",
+    url: "/interviews/custom",
+    icon: FileText,
     badge: null,
   },
 ];
