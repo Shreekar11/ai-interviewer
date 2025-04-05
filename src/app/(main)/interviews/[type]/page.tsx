@@ -1,7 +1,7 @@
 "use client"; // Ensure this is a Client Component
 
 import { useParams } from "next/navigation";
-import InterviewCard from "@/components/interview/InterviewCard";
+import InterviewCard from "@/components/interview/interview-card";
 import useInterviewsType from "@/hooks/use-interview-type";
 import { Skeleton } from "@/components/ui/skeleton";
 import InterviewDialog from "@/components/interview/interview-dialog";

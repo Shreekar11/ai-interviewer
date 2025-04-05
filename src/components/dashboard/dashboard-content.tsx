@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import InterviewCard from "../interview/InterviewCard";
+import InterviewCard from "../interview/interview-card";
 import { useUser } from "@/context/user.context";
 import InterviewDialog from "../interview/interview-dialog";
 import { InterviewData } from "@/types/interview";

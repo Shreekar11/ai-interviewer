@@ -1,4 +1,5 @@
 import React from "react";
+import { Badge } from "../ui/badge";
 
 interface InterviewCardProps {
   title: string;
@@ -29,12 +30,13 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
       {tags && tags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">
           {tags.map((tag, index) => (
-            <span
+            <Badge
               key={index}
-              className="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full"
+              variant="outline"
+              className="bg-blue-50 text-blue-700 hover:bg-blue-100"
             >
               {tag}
-            </span>
+            </Badge>
           ))}
         </div>
       )}
