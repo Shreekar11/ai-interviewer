@@ -112,7 +112,7 @@ export class InterviewService {
         // Fetch user profile details
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .select("experience, projects, skills")
+          .select("id")
           .eq("fk_user_id", userId)
           .single();
 
@@ -124,17 +124,29 @@ export class InterviewService {
           throw new Error("User profile not found");
         }
 
-        // Extract profile data
-        const { experience, projects, skills } = profileData;
+        const { data: experience, error: experienceError } = await supabase
+          .from("experiences")
+          .select("*")
+          .eq("fk_profile_id", profileData.id)
+
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("fk_profile_id", profileData.id)
+
+        const { data: skills, error: skillsError } = await supabase
+          .from("skills")
+          .select("*")
+          .eq("fk_profile_id", profileData.id)
 
         const questions = await generatePersonalQuestions(
-          experience,
-          projects,
-          skills
+          experience || [],
+          projects || [],
+          skills || []
         );
 
         interviewData.questions = questions;
-        interviewData.skills = skills.map(
+        interviewData.skills = skills?.map(
           (skill: { name: string }) => skill.name
         );
       } else {
@@ -260,7 +272,7 @@ export class InterviewService {
       const { data: interviews, error: supabaseError } = await supabase
         .from("interviews")
         .select("*")
-        .eq("type", type)
+        .eq("type", type);
 
       if (supabaseError) {
         throw new Error(`Supabase error: ${supabaseError.message}`);

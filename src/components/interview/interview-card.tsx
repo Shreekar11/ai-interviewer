@@ -8,12 +8,14 @@ interface InterviewCardProps {
   tags?: string[];
 }
 
-function parseDate(isoDateString: string) {
-  // Create a Date object from the ISO string
-  const date = new Date(isoDateString);
-  // Return formatted date string
-  return date.toLocaleString("en-US");
-}
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
 
 const InterviewCard: React.FC<InterviewCardProps> = ({
   title,
@@ -25,7 +27,7 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
   return (
     <div className="bg-white border border-gray-200 rounded-2xl shadow-md transition-transform hover:scale-[1.02] hover:shadow-lg p-5">
       <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-      <p className="text-sm text-gray-500 mt-1">{parseDate(date)}</p>
+      <p className="text-sm text-gray-500 mt-1">{formatDate(date)}</p>
 
       {tags && tags.length > 0 && (
         <div className="mt-3 flex flex-wrap gap-2">

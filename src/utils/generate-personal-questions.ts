@@ -1,11 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { text } from "stream/consumers";
 import { extractQuestionsFromGeminiOutput } from "./parse-question";
 
 export async function generatePersonalQuestions(
-  experience: any[],
-  projects: any[],
-  skills: any[]
+  experience: any[] | [],
+  projects: any[] | [],
+  skills: any[] | []
 ) {
   try {
     // Import Google Generative AI
@@ -16,17 +15,17 @@ export async function generatePersonalQuestions(
 
     // Prepare the context for Gemini
     const experienceContext = experience
-      .map(
+      ?.map(
         (exp: any) =>
-          `${exp.position} at ${exp.company} (${exp.startDate} - ${exp.endDate}): ${exp.description}`
+          `${exp.position} at ${exp.company} (${exp.start_date} - ${exp.end_date}): ${exp.description}`
       )
-      .join("\n");
+      .join("\n");   
 
     const projectsContext = projects
-      .map((proj: any) => `Project: ${proj.name} - ${proj.description}`)
+      ?.map((proj: any) => `Project: ${proj.project_name} - ${proj.description}`)
       .join("\n");
 
-    const skillsContext = skills.map((skill: any) => skill.name).join(", ");
+    const skillsContext = skills?.map((skill: any) => skill.name).join(", ");
 
     // Create the prompt for Gemini
     const prompt = `
