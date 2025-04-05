@@ -6,37 +6,6 @@ import useInterviewsType from "@/hooks/use-interview-type";
 import { Skeleton } from "@/components/ui/skeleton";
 import InterviewDialog from "@/components/interview/interview-dialog";
 
-const allInterviews = {
-  personal: [
-    {
-      id: 1,
-      title: "Frontend Developer Interview",
-      date: "12 May 2023",
-      company: "Tech Solutions Inc.",
-    },
-    {
-      id: 2,
-      title: "React Developer Position",
-      date: "18 May 2023",
-      company: "Digital Innovators",
-    },
-  ],
-  custom: [
-    {
-      id: 3,
-      title: "Custom JavaScript Interview",
-      date: "22 May 2023",
-      tags: ["JavaScript", "React", "TypeScript"],
-    },
-    {
-      id: 4,
-      title: "Backend API Testing",
-      date: "28 May 2023",
-      tags: ["Postman", "REST", "GraphQL"],
-    },
-  ],
-};
-
 const InterviewsPage = () => {
   const params = useParams();
   const type = params?.type;
@@ -46,7 +15,7 @@ const InterviewsPage = () => {
   );
 
   // Check if the type is valid
-  if (typeof type !== "string" || !(type in allInterviews)) {
+  if (typeof type !== "string") {
     return <p className="text-center text-gray-500">Invalid interview type</p>;
   }
 

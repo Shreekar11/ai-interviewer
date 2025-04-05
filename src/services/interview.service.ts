@@ -338,7 +338,7 @@ export class InterviewService {
         throw new Error(`Supabase error: ${deleteError.message}`);
       }
 
-      return { success: true };
+      return { status: true };
     } catch (err: any) {
       setError(err.message || "An error occurred while deleting the interview");
       console.error("Error: ", err);

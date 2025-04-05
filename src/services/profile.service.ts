@@ -29,7 +29,7 @@ export class ProfileService {
 
       if (!session) {
         return {
-          status: "error",
+          status: false,
           message: "No active session found. Please sign in again.",
           error: "AUTH_ERROR",
         };
@@ -47,7 +47,7 @@ export class ProfileService {
 
       if (userError || !userData) {
         return {
-          status: "error",
+          status: false,
           message: `User account not found: ${
             userError?.message || "Please complete registration"
           }`,
@@ -74,7 +74,7 @@ export class ProfileService {
         // Handle specific error types
         if (profileError.code === "23505") {
           return {
-            status: "error",
+            status: false,
             message: "You already have a profile. Try updating instead.",
             error: "DUPLICATE_PROFILE",
           };
@@ -82,14 +82,14 @@ export class ProfileService {
           profileError.message.includes("violates row-level security policy")
         ) {
           return {
-            status: "error",
+            status: false,
             message:
               "You don't have permission to create this profile. Please contact support.",
             error: "PERMISSION_DENIED",
           };
         } else {
           return {
-            status: "error",
+            status: false,
             message: `Error creating profile: ${profileError.message}`,
             error: "PROFILE_ERROR",
           };
@@ -147,7 +147,7 @@ export class ProfileService {
         }
 
         return {
-          status: "success",
+          status: true,
           message: "Profile saved successfully!",
           data: profile,
         };
@@ -156,7 +156,7 @@ export class ProfileService {
         await supabase.from("profiles").delete().eq("id", profileId);
 
         return {
-          status: "error",
+          status: false,
           message: error.message || "Error saving profile details",
           error: "RELATED_DATA_ERROR",
         };
@@ -165,7 +165,7 @@ export class ProfileService {
       // Catch any unexpected errors
       console.error("Profile creation error:", error);
       return {
-        status: "error",
+        status: false,
         message:
           error.message ||
           "An unexpected error occurred while creating your profile",

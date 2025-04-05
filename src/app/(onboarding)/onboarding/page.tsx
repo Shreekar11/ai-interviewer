@@ -159,7 +159,7 @@ const OnboardingPage = () => {
         skills: formData.skills,
       });
 
-      if (result.status === "success") {
+      if (result.status) {
         // Show success message
         toast.success("Profile completed successfully!");
         router.push("/dashboard");

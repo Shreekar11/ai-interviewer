@@ -91,7 +91,7 @@ export default function InterviewDialog() {
         jobDescription: formData.description,
       });
 
-      if (!result.success) {
+      if (!result.status) {
         throw new Error("Error saving interview ", result.error as any);
       }
       // Reset form

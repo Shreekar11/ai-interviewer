@@ -30,9 +30,7 @@ const useInterviewsType = (type: string | string[]) => {
       if (!result.status) {
         throw new Error(result.message || "Error in retrieving interviews");
       }
-
-      console.log(result);
-
+      
       const formattedInterviews = updatedInterviews(result.data);
 
       setInterviews(formattedInterviews);

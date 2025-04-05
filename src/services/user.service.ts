@@ -41,7 +41,7 @@ export class UserService {
 
       if (existingUser) {
         return {
-          success: true,
+          status: true,
           message: "User already exists",
           userData: existingUser,
           isNewUser: false,
@@ -68,7 +68,7 @@ export class UserService {
       }
 
       return {
-        success: true,
+        status: true,
         message: "User successfully registered",
         userData: data?.[0] || null,
         isNewUser: true,
