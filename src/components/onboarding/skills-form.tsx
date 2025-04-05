@@ -5,26 +5,28 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, X } from "lucide-react";
-import { ProfileType } from "@/types";
+import { Profile } from "@/types";
 
 interface SkillsFormProps {
   data: {
-    name: string;
+    skill_name: string;
   }[];
-  setFormData: React.Dispatch<React.SetStateAction<ProfileType>>;
+  setFormData: React.Dispatch<React.SetStateAction<Profile>>;
 }
 
 export default function SkillsForm({ data, setFormData }: SkillsFormProps) {
-  const [skills, setSkills] = useState(data.length ? data : [{ name: "" }]);
+  const [skills, setSkills] = useState(
+    data.length ? data : [{ skill_name: "" }]
+  );
 
   const handleSkillChange = (index: number, value: string) => {
     const updatedSkills = [...skills];
-    updatedSkills[index].name = value;
+    updatedSkills[index].skill_name = value;
     setSkills(updatedSkills);
   };
 
   const addSkill = () => {
-    setSkills([...skills, { name: "" }]);
+    setSkills([...skills, { skill_name: "" }]);
   };
 
   const removeSkill = (index: number) => {
@@ -53,7 +55,7 @@ export default function SkillsForm({ data, setFormData }: SkillsFormProps) {
               </Label>
               <Input
                 id={`skill-${index}`}
-                value={skill.name}
+                value={skill.skill_name}
                 onChange={(e) => handleSkillChange(index, e.target.value)}
                 placeholder="Enter a skill (e.g., JavaScript, Project Management)"
               />

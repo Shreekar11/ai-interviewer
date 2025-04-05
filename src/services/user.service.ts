@@ -1,4 +1,4 @@
-import { createClient } from "../../supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 interface UserMetadata {
   name?: string;
@@ -12,8 +12,9 @@ export class UserService {
   /**
    * Save a new user to Supabase after authentication
    * @param setError Function to set error messages
+   * @returns Object containing user data or success message
    */
-  static async saveUserToSupabase(setError: (error: string | null) => void) {
+  public async saveUserToSupabase(setError: (error: string | null) => void) {
     try {
       const supabase = createClient();
       const session = await supabase.auth.getUser();
@@ -32,13 +33,30 @@ export class UserService {
         throw new Error("Email is required");
       }
 
-      // Store in Supabase
-      const { error: supabaseError } = await supabase.from("users").insert({
-        first_name: name?.split(" ")[0] || "",
-        last_name: name?.split(" ")[1] || "",
-        email: email,
-        auth_id: user.id,
-      });
+      const { data: existingUser } = await supabase
+        .from("users")
+        .select()
+        .eq("auth_id", user.id)
+        .single();
+
+      if (existingUser) {
+        return {
+          success: true,
+          message: "User already exists",
+          userData: existingUser,
+          isNewUser: false,
+        };
+      }
+
+      const { error: supabaseError, data } = await supabase
+        .from("users")
+        .insert({
+          first_name: name?.split(" ")[0] || "",
+          last_name: name?.split(" ")[1] || "",
+          email: email,
+          auth_id: user.id,
+        })
+        .select();
 
       if (supabaseError) {
         if (supabaseError.code === "23505") {
@@ -48,6 +66,13 @@ export class UserService {
         }
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
+
+      return {
+        success: true,
+        message: "User successfully registered",
+        userData: data?.[0] || null,
+        isNewUser: true,
+      };
     } catch (err: any) {
       setError(err.message || "An error occurred during signup");
       console.error("Error: ", err);

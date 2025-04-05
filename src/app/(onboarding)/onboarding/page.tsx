@@ -25,7 +25,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ProfileType } from "@/types";
+import { Profile } from "@/types";
+import { ProfileService } from "@/services/profile.service";
+import { toast } from "sonner";
 
 const steps = [
   {
@@ -69,19 +71,23 @@ export default function OnboardingPage() {
   }, [page]);
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<ProfileType>({
-    personal: { firstName: "", lastName: "", aboutMe: "" },
-    projects: [{ name: "", description: "", startDate: "", endDate: "" }],
+  const [formData, setFormData] = useState<Profile>({
+    first_name: "",
+    last_name: "",
+    about_me: "",
+    projects: [
+      { project_name: "", description: "", start_date: "", end_date: "" },
+    ],
     experience: [
       {
         company: "",
         position: "",
         description: "",
-        startDate: "",
-        endDate: "",
+        start_date: "",
+        end_date: "",
       },
     ],
-    skills: [{ name: "" }],
+    skills: [{ skill_name: "" }],
   });
 
   const [errors, setErrors] = useState<string | null>(null);
@@ -90,14 +96,14 @@ export default function OnboardingPage() {
     let errorMsg = "";
     if (
       currentStep === 1 &&
-      (!formData.personal.firstName ||
-        !formData.personal.lastName ||
-        !formData.personal.aboutMe)
+      (!formData.first_name || !formData.last_name || !formData.about_me)
     ) {
       errorMsg = "Please fill in your personal information.";
     } else if (
       currentStep === 2 &&
-      formData.projects.some((project) => !project.name || !project.description)
+      formData.projects.some(
+        (project) => !project.project_name || !project.description
+      )
     ) {
       errorMsg = "Please complete the project details.";
     } else if (
@@ -107,7 +113,7 @@ export default function OnboardingPage() {
       errorMsg = "Please complete your work experience.";
     } else if (
       currentStep === 4 &&
-      formData.skills.some((skill) => !skill.name)
+      formData.skills.some((skill) => !skill.skill_name)
     ) {
       errorMsg = "Please add at least one skill.";
     }
@@ -122,7 +128,6 @@ export default function OnboardingPage() {
 
   const handleNext = () => {
     if (!validateFields()) return;
-
     if (currentStep < 4) {
       const nextStep = currentStep + 1;
       setCurrentStep(nextStep);
@@ -137,6 +142,37 @@ export default function OnboardingPage() {
       setCurrentStep(prevStep);
       const newStep = steps.find((step) => step.id === prevStep);
       router.push(`/onboarding?page=${newStep?.slug}`);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const profileService = new ProfileService();
+      const result = await profileService.createProfile({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        about_me: formData.about_me,
+        experience: formData.experience,
+        projects: formData.projects,
+        skills: formData.skills,
+      });
+
+      if (result.status === "success") {
+        // Show success message
+        toast.success("Profile completed successfully!");
+        router.push("/dashboard");
+      } else {
+        // Show error message
+        toast.error(result.message);
+        if (result.error === "AUTH_ERROR") {
+          router.push("/sign-in");
+        } else if (result.error === "DUPLICATE_PROFILE") {
+          router.push("/profile");
+        }
+      }
+    } catch (err: any) {
+      const errorMessage = err.message || "Failed to save profile";
+      toast.error(errorMessage);
     }
   };
 
@@ -230,7 +266,9 @@ export default function OnboardingPage() {
             <div className="bg-white rounded-xl border shadow-lg p-8 mb-8">
               {currentStep === 1 && (
                 <PersonalInfoForm
-                  data={formData.personal}
+                  first_name={formData.first_name}
+                  last_name={formData.last_name}
+                  about_me={formData.about_me}
                   setFormData={setFormData}
                 />
               )}
@@ -258,12 +296,21 @@ export default function OnboardingPage() {
               >
                 Previous
               </Button>
-              <Button
-                onClick={handleNext}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
-              >
-                {currentStep < 4 ? "Next" : "Complete"}
-              </Button>
+              {currentStep < 4 ? (
+                <Button
+                  onClick={handleNext}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSubmit}
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Complete
+                </Button>
+              )}
             </div>
           </div>
         </main>

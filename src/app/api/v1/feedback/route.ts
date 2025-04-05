@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { InterviewService } from "../../../../services/interview.service";
-import { parseInterviewFeedback } from "../../../../utils/parse-feedback";
+import { InterviewService } from "@/services/interview.service";
+import { parseInterviewFeedback } from "@/utils/parse-feedback";
 
 export async function POST(req: NextRequest) {
   try {

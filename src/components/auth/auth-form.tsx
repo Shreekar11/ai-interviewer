@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "../../../supabase/client";
+import { Button } from "../ui/button";
 
 export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,11 @@ export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
     supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `http://localhost:3000/onboarding`,
+        redirectTo: `http://localhost:3000/api/auth/callback?mode=${mode}`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     });
     setLoading(false);
@@ -36,35 +41,7 @@ export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
 
         <div className="mt-10">
           <div className="space-y-6">
-            <form className="space-y-4">
-              <input
-                name="email"
-                type="email"
-                placeholder="name@example.com"
-                required
-                className="px-4 h-12 bg-white rounded-lg border-gray-200 shadow-sm transition-colors focus:border-blue-500 focus:ring-blue-500"
-              />
-
-              <button
-                type="submit"
-                className="w-full h-12 font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                {false ? <div className="">...</div> : "Continue with Email"}
-              </button>
-            </form>
-
-            <div className="relative">
-              <div className="flex absolute inset-0 items-center">
-                <div className="w-full border-t border-gray-200" />
-              </div>
-              <div className="flex relative justify-center">
-                <span className="px-4 text-sm text-gray-500 bg-gradient-to-b from-white to-gray-50">
-                  or
-                </span>
-              </div>
-            </div>
-
-            <button
+            <Button
               onClick={handleGoogleSignIn}
               className="w-full h-12 font-medium text-gray-700 bg-white rounded-lg border border-gray-200 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
@@ -93,7 +70,7 @@ export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
                   Continue with Google
                 </div>
               )}
-            </button>
+            </Button>
           </div>
 
           <p className="mt-8 text-sm text-center text-gray-600">

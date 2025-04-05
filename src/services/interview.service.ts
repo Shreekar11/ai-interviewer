@@ -1,5 +1,5 @@
 import { InterviewFeedback } from "@/types/interview";
-import { createClient } from "../../supabase/client";
+import { createClient } from "@/utils/supabase/client";
 import { generatePersonalQuestions } from "@/utils/generatePersonalQuestions";
 
 interface InterviewData {
