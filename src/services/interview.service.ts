@@ -80,7 +80,7 @@ export class InterviewService {
 
       if (!session) {
         return {
-          status: "error",
+          status: false,
           message: "No active session found. Please sign in again.",
           error: "AUTH_ERROR",
         };
@@ -98,7 +98,7 @@ export class InterviewService {
 
       if (userError || !userData) {
         return {
-          status: "error",
+          status: false,
           message: `User account not found: ${
             userError?.message || "Please complete registration"
           }`,
@@ -165,7 +165,7 @@ export class InterviewService {
       }
 
       return {
-        success: true,
+        status: true,
         data: interviewResult,
         message: "Interview created successfully!",
       };
@@ -175,7 +175,7 @@ export class InterviewService {
     }
   }
 
-  public async getInterviewsByUser(setError: (error: string | null) => void) {
+  public async getInterviewsByUser() {
     try {
       const supabase = createClient();
 
@@ -209,9 +209,12 @@ export class InterviewService {
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
 
-      return interviews;
+      return {
+        status: true,
+        message: "Interviews retrieved successfully!",
+        data: interviews,
+      };
     } catch (err: any) {
-      setError(err.message || "An error occurred while fetching interviews");
       console.error("Error: ", err);
       throw err;
     }

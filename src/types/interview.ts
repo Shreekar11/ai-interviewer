@@ -4,6 +4,7 @@ export interface InterviewData {
   questions?: string[];
   skills?: string[];
   jobDescription?: string;
+  createdAt?: string;
 }
 
 /**
