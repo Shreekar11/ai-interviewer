@@ -225,7 +225,7 @@ export class InterviewService {
     setError: (error: string | null) => void
   ) {
     try {
-      const supabase = await createClient();
+      const supabase = createClient();
 
       const { data: interview, error: supabaseError } = await supabase
         .from("interviews")
@@ -241,9 +241,43 @@ export class InterviewService {
         throw new Error("Interview not found");
       }
 
-      return interview;
+      return {
+        status: true,
+        message: "Interviews retrieved successfully!",
+        data: interview,
+      };
     } catch (err: any) {
       setError(err.message || "An error occurred while fetching the interview");
+      console.error("Error: ", err);
+      throw err;
+    }
+  }
+
+  public async getInterviewsByType(type: string | string[]) {
+    try {
+      const supabase = createClient();
+
+      const { data: interviews, error: supabaseError } = await supabase
+        .from("interviews")
+        .select("*")
+        .eq("type", type)
+
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+
+      console.log(interviews);
+
+      if (!(interviews.length > 0)) {
+        throw new Error("Interview not found");
+      }
+
+      return {
+        status: true,
+        message: "Interviews retrieved successfully!",
+        data: interviews,
+      };
+    } catch (err: any) {
       console.error("Error: ", err);
       throw err;
     }
