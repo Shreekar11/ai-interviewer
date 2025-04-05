@@ -1,15 +1,16 @@
 "use client";
-import React from "react";
+
 import { useRouter } from "next/navigation";
-import InterviewCard from "../interview/interview-card";
+import { Interview } from "@/types/interview";
 import { useUser } from "@/context/user.context";
+
+import InterviewCard from "../interview/interview-card";
 import InterviewDialog from "../interview/interview-dialog";
-import { InterviewData } from "@/types/interview";
 import InterviewDashboardSkeleton from "../interview/interview-skeleton";
 
 interface DashboardContentProps {
   loading: boolean;
-  interviews: InterviewData[];
+  interviews: Interview[];
 }
 
 const DashboardContent = ({ loading, interviews }: DashboardContentProps) => {
@@ -31,22 +32,27 @@ const DashboardContent = ({ loading, interviews }: DashboardContentProps) => {
 
           {/* Personal Interviews */}
           <>
-            {interviews.filter((interview) => interview.type === "PERSONAL")
-              .length !== 0 && (
+            {interviews.filter(
+              (interview) => interview.interviewData.type === "PERSONAL"
+            ).length !== 0 && (
               <section className="mb-8">
                 <h2 className="text-xl font-medium mb-4">
                   Personal Interviews
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {interviews
-                    .filter((interview) => interview.type === "PERSONAL")
+                    .filter(
+                      (interview) => interview.interviewData.type === "PERSONAL"
+                    )
                     .slice(0, 2)
                     .map((interview, index) => (
                       <InterviewCard
                         key={index}
-                        title={interview.name}
-                        date={`${interview.createdAt} • ${interview.name}`}
-                        type={interview.type}
+                        id={interview.interviewData.id}
+                        title={interview.interviewData.name}
+                        date={`${interview.interviewData.createdAt} • ${interview.interviewData.name}`}
+                        type={interview.interviewData.type}
+                        isFeedback={interview.interviewFeedback.feedbacks.length > 0}
                       />
                     ))}
                 </div>
@@ -64,21 +70,26 @@ const DashboardContent = ({ loading, interviews }: DashboardContentProps) => {
 
           {/* Custom Interviews */}
           <>
-            {interviews.filter((interview) => interview.type === "CUSTOM")
-              .length !== 0 && (
+            {interviews.filter(
+              (interview) => interview.interviewData.type === "CUSTOM"
+            ).length !== 0 && (
               <section>
                 <h2 className="text-xl font-medium mb-4">Custom Interviews</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {interviews
-                    .filter((interview) => interview.type === "CUSTOM")
+                    .filter(
+                      (interview) => interview.interviewData.type === "CUSTOM"
+                    )
                     .slice(0, 2)
                     .map((interview, index) => (
                       <InterviewCard
                         key={index}
-                        title={interview.name}
-                        date={interview.createdAt || ""}
-                        type={interview.type}
-                        tags={interview.skills || []}
+                        id={interview.interviewData.id}
+                        title={interview.interviewData.name}
+                        date={interview.interviewData.createdAt || ""}
+                        type={interview.interviewData.type}
+                        tags={interview.interviewData.skills || []}
+                        isFeedback={interview.interviewFeedback.feedbacks.length > 0}
                       />
                     ))}
                 </div>

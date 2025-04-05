@@ -1,9 +1,10 @@
 "use client"; // Ensure this is a Client Component
 
 import { useParams } from "next/navigation";
-import InterviewCard from "@/components/interview/interview-card";
-import useInterviewsType from "@/hooks/use-interview-type";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import useInterviewsType from "@/hooks/use-interview-type";
+import InterviewCard from "@/components/interview/interview-card";
 import InterviewDialog from "@/components/interview/interview-dialog";
 
 const InterviewsPage = () => {
@@ -42,10 +43,11 @@ const InterviewsPage = () => {
           {interviews.map((interview, index) => (
             <InterviewCard
               key={index}
-              title={interview.name}
-              date={interview.createdAt || ""}
+              title={interview.interviewData.name}
+              date={interview.interviewData.createdAt || ""}
               type={type as "PERSONAL" | "CUSTOM"}
-              tags={interview.skills || []}
+              tags={interview.interviewData.skills || []}
+              isFeedback={interview.interviewFeedback.feedbacks.length > 0}
             />
           ))}
         </div>

@@ -7,6 +7,122 @@ import { generatePersonalQuestions } from "@/utils/generate-personal-questions";
  * Service for handling interview-related database operations
  */
 export class InterviewService {
+  public async saveInterviewToSupabase(interviewData: InterviewData) {
+    try {
+      const supabase = createClient();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        return {
+          status: false,
+          message: "No active session found. Please sign in again.",
+          error: "AUTH_ERROR",
+        };
+      }
+
+      // Get the current auth user ID
+      const authUserId = session.user.id;
+
+      // Get the user record to get the correct user ID from users table
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("auth_id", authUserId)
+        .single();
+
+      if (userError || !userData) {
+        return {
+          status: false,
+          message: `User account not found: ${
+            userError?.message || "Please complete registration"
+          }`,
+          error: "USER_NOT_FOUND",
+        };
+      }
+
+      const userId = userData.id;
+
+      if (interviewData.type === "PERSONAL") {
+        // Fetch user profile details
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("fk_user_id", userId)
+          .single();
+
+        if (profileError) {
+          throw new Error(`Error fetching profile: ${profileError.message}`);
+        }
+
+        if (!profileData) {
+          throw new Error("User profile not found");
+        }
+
+        const { data: experience, error: experienceError } = await supabase
+          .from("experiences")
+          .select("*")
+          .eq("fk_profile_id", profileData.id);
+
+        const { data: projects, error: projectsError } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("fk_profile_id", profileData.id);
+
+        const { data: skills, error: skillsError } = await supabase
+          .from("skills")
+          .select("*")
+          .eq("fk_profile_id", profileData.id);
+
+        const questions = await generatePersonalQuestions(
+          experience || [],
+          projects || [],
+          skills || []
+        );
+
+        interviewData.questions = questions;
+        interviewData.skills = skills?.map(
+          (skill: { name: string }) => skill.name
+        );
+      } else {
+        const questions = await generateCustomQuestions(
+          interviewData.skills || [],
+          interviewData.jobDescription || ""
+        );
+
+        interviewData.questions = questions;
+      }
+
+      const { data: interviewResult, error: supabaseError } = await supabase
+        .from("interviews")
+        .insert({
+          fk_user_id: userId,
+          name: interviewData.name,
+          type: interviewData.type,
+          questions: interviewData.questions,
+          skills: interviewData.skills || [],
+          job_description: interviewData.jobDescription || [],
+          created_at: new Date(),
+        })
+        .select()
+        .single();
+
+      if (supabaseError) {
+        throw new Error(`Supabase error: ${supabaseError.message}`);
+      }
+
+      return {
+        status: true,
+        data: interviewResult,
+        message: "Interview created successfully!",
+      };
+    } catch (err: any) {
+      console.error("Error: ", err);
+      throw err;
+    }
+  }
+
   /**
    * Save interview details, feedbacks, and summary to the database
    * @param interviewId - The ID of the interview
@@ -71,122 +187,6 @@ export class InterviewService {
     return interviewDetails;
   }
 
-  public async saveInterviewToSupabase(interviewData: InterviewData) {
-    try {
-      const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        return {
-          status: false,
-          message: "No active session found. Please sign in again.",
-          error: "AUTH_ERROR",
-        };
-      }
-
-      // Get the current auth user ID
-      const authUserId = session.user.id;
-
-      // Get the user record to get the correct user ID from users table
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("auth_id", authUserId)
-        .single();
-
-      if (userError || !userData) {
-        return {
-          status: false,
-          message: `User account not found: ${
-            userError?.message || "Please complete registration"
-          }`,
-          error: "USER_NOT_FOUND",
-        };
-      }
-
-      const userId = userData.id;
-
-      if (interviewData.type === "PERSONAL") {
-        // Fetch user profile details
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("id")
-          .eq("fk_user_id", userId)
-          .single();
-
-        if (profileError) {
-          throw new Error(`Error fetching profile: ${profileError.message}`);
-        }
-
-        if (!profileData) {
-          throw new Error("User profile not found");
-        }
-
-        const { data: experience, error: experienceError } = await supabase
-          .from("experiences")
-          .select("*")
-          .eq("fk_profile_id", profileData.id)
-
-        const { data: projects, error: projectsError } = await supabase
-          .from("projects")
-          .select("*")
-          .eq("fk_profile_id", profileData.id)
-
-        const { data: skills, error: skillsError } = await supabase
-          .from("skills")
-          .select("*")
-          .eq("fk_profile_id", profileData.id)
-
-        const questions = await generatePersonalQuestions(
-          experience || [],
-          projects || [],
-          skills || []
-        );
-
-        interviewData.questions = questions;
-        interviewData.skills = skills?.map(
-          (skill: { name: string }) => skill.name
-        );
-      } else {
-        const questions = await generateCustomQuestions(
-          interviewData.skills || [],
-          interviewData.jobDescription || ""
-        );
-
-        interviewData.questions = questions;
-      }
-
-      const { data: interviewResult, error: supabaseError } = await supabase
-        .from("interviews")
-        .insert({
-          fk_user_id: userId,
-          name: interviewData.name,
-          type: interviewData.type,
-          questions: interviewData.questions,
-          skills: interviewData.skills || [],
-          job_description: interviewData.jobDescription || [],
-          created_at: new Date(),
-        })
-        .select()
-        .single();
-
-      if (supabaseError) {
-        throw new Error(`Supabase error: ${supabaseError.message}`);
-      }
-
-      return {
-        status: true,
-        data: interviewResult,
-        message: "Interview created successfully!",
-      };
-    } catch (err: any) {
-      console.error("Error: ", err);
-      throw err;
-    }
-  }
-
   public async getInterviewsByUser() {
     try {
       const supabase = createClient();
@@ -214,7 +214,15 @@ export class InterviewService {
 
       const { data: interviews, error: supabaseError } = await supabase
         .from("interviews")
-        .select("*")
+        .select(
+          `
+        *,
+        interview_details!fk_interview_id(*,
+          feedback!fk_interview_details_id(*),
+          summaries!fk_interview_details_id(*)
+        )
+      `
+        )
         .eq("fk_user_id", user.id);
 
       if (supabaseError) {
@@ -271,7 +279,15 @@ export class InterviewService {
 
       const { data: interviews, error: supabaseError } = await supabase
         .from("interviews")
-        .select("*")
+        .select(
+          `
+          *,
+          interview_details!fk_interview_id(*,
+            feedback!fk_interview_details_id(*),
+            summaries!fk_interview_details_id(*)
+          )
+        `
+        )
         .eq("type", type);
 
       if (supabaseError) {

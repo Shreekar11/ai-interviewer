@@ -1,4 +1,11 @@
+export interface Interview {
+  interviewData: InterviewData;
+  interviewFeedback: InterviewFeedback,
+  videoLink: string;
+}
+
 export interface InterviewData {
+  id?: string;
   name: string;
   type: string;
   questions?: string[];
