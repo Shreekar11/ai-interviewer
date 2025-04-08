@@ -23,6 +23,7 @@ import { Home, LogOut, User, LaptopMinimal, FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useUser } from "@/context/user.context";
+import { usePathname } from "next/navigation";
 
 // Main menu items
 const mainItems = [
@@ -53,7 +54,7 @@ const mainItems = [
 ];
 
 export function AppSidebar() {
-  const [activeItem, setActiveItem] = useState("Dashboard");
+  const pathName = usePathname();
   const {
     user: { name, email, avatar },
   } = useUser();
@@ -81,13 +82,13 @@ export function AppSidebar() {
                           <SidebarMenuButton
                             asChild
                             className={cn(
-                              `group flex w-full items-center rounded-md px-3 py-2 hover:bg-blue-50
+                              `group flex w-full items-center rounded-md px-3 py-2
                                hover:text-accent-foreground focus-visible:outline-none`,
-                              activeItem === item.title
-                                ? "bg-blue-100 text-accent-foreground"
+                              pathName === item.url
+                                ? `bg-blue-100 text-accent-foreground 
+                                hover:bg-blue-100 hover:text-accent-foreground`
                                 : "transparent"
                             )}
-                            onClick={() => setActiveItem(item.title)}
                           >
                             <Link
                               href={item.url}

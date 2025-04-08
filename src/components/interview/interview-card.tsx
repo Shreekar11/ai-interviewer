@@ -33,7 +33,7 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
   const typeName = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
   return (
     <div
-      className="bg-white border border-gray-200 rounded-2xl 
+      className="bg-white border border-gray-200 rounded-lg 
     shadow-md transition-transform hover:scale-[1.02] hover:shadow-lg p-5"
     >
       <h3 className="text-lg font-semibold text-gray-900">{title}</h3>

@@ -79,7 +79,7 @@ const OnboardingPage = () => {
     projects: [
       { project_name: "", description: "", start_date: "", end_date: "" },
     ],
-    experience: [
+    experiences: [
       {
         company: "",
         position: "",
@@ -109,7 +109,7 @@ const OnboardingPage = () => {
       errorMsg = "Please complete the project details.";
     } else if (
       currentStep === 3 &&
-      formData.experience.some((exp) => !exp.company || !exp.position)
+      formData.experiences.some((exp) => !exp.company || !exp.position)
     ) {
       errorMsg = "Please complete your work experience.";
     } else if (
@@ -154,7 +154,7 @@ const OnboardingPage = () => {
         last_name: formData.last_name,
         about_me: formData.about_me,
         profile_image: formData.profile_image,
-        experience: formData.experience,
+        experiences: formData.experiences,
         projects: formData.projects,
         skills: formData.skills,
       });
@@ -283,7 +283,7 @@ const OnboardingPage = () => {
               )}
               {currentStep === 3 && (
                 <ExperienceForm
-                  data={formData.experience}
+                  data={formData.experiences}
                   setFormData={setFormData}
                 />
               )}

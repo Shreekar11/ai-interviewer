@@ -4,7 +4,7 @@ export interface Profile {
   last_name: string;
   about_me: string;
   profile_image: string;
-  experience: Experience[];
+  experiences: Experience[];
   projects: Project[];
   skills: Skill[];
 }
