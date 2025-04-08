@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileSkeleton } from "@/components/profile/profile-skeleton";
 
 const ProfilePage = () => {
   const { loading, profile: userData } = useProfile();
@@ -39,7 +40,7 @@ const ProfilePage = () => {
   };
 
   if (loading) {
-    return <div className="">Loading...</div>;
+    return <ProfileSkeleton />;
   }
 
   return (
