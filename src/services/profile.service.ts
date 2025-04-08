@@ -17,7 +17,7 @@ export class ProfileService {
         last_name,
         about_me,
         profile_image,
-        experience,
+        experiences,
         projects,
         skills,
       } = data;
@@ -99,7 +99,7 @@ export class ProfileService {
       const profileId = profile.id;
 
       try {
-        const insertExperiences = experience.map((exp) => ({
+        const insertExperiences = experiences.map((exp) => ({
           ...exp,
           fk_profile_id: profileId,
         }));
@@ -220,7 +220,11 @@ export class ProfileService {
       throw new Error(`Error fetching profile: ${profileError.message}`);
     }
 
-    return profile;
+    return {
+      status: true,
+      message: "Profile retrieved successfully!",
+      data: profile,
+    };
   }
 
   /**
@@ -234,7 +238,7 @@ export class ProfileService {
       first_name,
       last_name,
       about_me,
-      experience,
+      experiences,
       projects,
       skills,
     } = data;
@@ -278,9 +282,9 @@ export class ProfileService {
       }
 
       // Insert new experiences
-      if (experience && experience.length > 0) {
+      if (experiences && experiences.length > 0) {
         const { error: expError } = await supabase.from("experiences").insert(
-          experience.map((exp) => ({
+          experiences.map((exp) => ({
             ...exp,
             fk_profile_id: id,
           }))
