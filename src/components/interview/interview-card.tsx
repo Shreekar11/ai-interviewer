@@ -65,7 +65,10 @@ const InterviewCard: React.FC<InterviewCardProps> = ({
         </span>
 
         {isFeedback ? (
-          <button className="text-sm text-blue-500 hover:text-blue-700 font-medium transition">
+          <button
+            onClick={() => router.push(`/interview/details/${id}`)}
+            className="text-sm text-blue-500 hover:text-blue-700 font-medium transition"
+          >
             View Details →
           </button>
         ) : (

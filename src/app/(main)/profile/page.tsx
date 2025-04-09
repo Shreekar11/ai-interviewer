@@ -17,19 +17,11 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProfileSkeleton } from "@/components/profile/profile-skeleton";
+import { useUser } from "@/context/user.context";
 
 const ProfilePage = () => {
   const { loading, profile: userData } = useProfile();
-  const [user, setUser] = useState<any>({
-    email: "",
-  });
-  useEffect(() => {
-    const fetchUser = async () => {
-      const user_data = await getUser();
-      setUser(user_data);
-    };
-    fetchUser();
-  }, []);
+  const { user } = useUser();
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {

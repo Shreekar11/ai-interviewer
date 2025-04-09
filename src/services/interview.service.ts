@@ -269,13 +269,21 @@ export class InterviewService {
     }
   }
 
-  public async getInterviewById(interviewId: string) {
+  public async getInterviewById(interviewId: string | string[]) {
     try {
       const supabase = createClient();
 
       const { data: interview, error: supabaseError } = await supabase
         .from("interviews")
-        .select("*")
+        .select(
+          `
+        *,
+        interview_details!fk_interview_id(*,
+          feedback!fk_interview_details_id(*),
+          summaries!fk_interview_details_id(*)
+        )
+      `
+        )
         .eq("id", interviewId)
         .single();
 
@@ -289,7 +297,7 @@ export class InterviewService {
 
       return {
         status: true,
-        message: "Interviews retrieved successfully!",
+        message: "Interview retrieved successfully!",
         data: interview,
       };
     } catch (err: any) {

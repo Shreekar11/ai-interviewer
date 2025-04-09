@@ -43,6 +43,7 @@ const InterviewsPage = () => {
           {interviews.map((interview, index) => (
             <InterviewCard
               key={index}
+              id={interview.interviewData.id}
               title={interview.interviewData.name}
               date={interview.interviewData.createdAt || ""}
               type={type as "PERSONAL" | "CUSTOM"}

@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { Interview } from "@/types/interview";
 import { InterviewService } from "@/services/interview.service";
-import { formatInterviewsData } from "@/utils/format-interview";
+import { formatInterviewData } from "@/utils/format-interview";
 
-const useInterviewsType = (type: string | string[]) => {
+const useInterviewDetails = (interviewId: string | string[]) => {
   const [loading, setLoading] = useState(false);
-  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [interview, setInterview] = useState<Interview>();
 
-  const fetchInterviews = async () => {
+  const fetchInterview = async () => {
     setLoading(true);
     try {
       const interviewService = new InterviewService();
-      const result = await interviewService.getInterviewsByType(type);
+      const result = await interviewService.getInterviewById(interviewId || []);
       if (!result.status) {
         throw new Error(result.message || "Error in retrieving interviews");
       }
 
-      const formattedInterviews = formatInterviewsData(result.data || []);
+      const formattedInterviews = formatInterviewData(result.data);
 
-      setInterviews(formattedInterviews);
+      setInterview(formattedInterviews);
     } catch (err) {
       console.error("Error: ", err);
     } finally {
@@ -27,10 +27,10 @@ const useInterviewsType = (type: string | string[]) => {
   };
 
   useEffect(() => {
-    fetchInterviews();
+    fetchInterview();
   }, []);
 
-  return { loading, interviews, fetchInterviews };
+  return { loading, interview, fetchInterview };
 };
 
-export default useInterviewsType;
+export default useInterviewDetails;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Interview } from "@/types/interview";
 import { InterviewService } from "@/services/interview.service";
-import { formatInterviewData } from "@/utils/format-interview";
+import { formatInterviewsData } from "@/utils/format-interview";
 
 const useInterviews = () => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ const useInterviews = () => {
         throw new Error(result.message || "Error in retrieving interviews");
       }
 
-      const formattedInterviews = formatInterviewData(result.data || []);
+      const formattedInterviews = formatInterviewsData(result.data || []);
 
       setInterviews(formattedInterviews);
     } catch (err) {

@@ -41,13 +41,13 @@ const mainItems = [
   },
   {
     title: "Personal Interviews",
-    url: "/interviews/personal",
+    url: "/interview/personal",
     icon: LaptopMinimal,
     badge: null,
   },
   {
     title: "Custom Interviews",
-    url: "/interviews/custom",
+    url: "/interview/custom",
     icon: FileText,
     badge: null,
   },
