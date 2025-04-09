@@ -23,7 +23,7 @@ export interface FeedbackItem {
   yourAnswer: string;
   feedback: string;
   category?: string | null;
-  suggesstionForImprovement?: string | null;
+  suggestionsForImprovement?: string | null;
 }
 
 /**
@@ -42,6 +42,6 @@ export interface InterviewSummary {
  * Represents the complete interview feedback data
  */
 export interface InterviewFeedback {
-  feedbacks: FeedbackItem[];
+  feedback: FeedbackItem[];
   summary: InterviewSummary;
 } 

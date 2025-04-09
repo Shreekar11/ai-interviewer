@@ -1,5 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
-import { UserMetadata } from "@supabase/supabase-js";
 import { AccessToken } from "livekit-server-sdk";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,9 +10,6 @@ import { NextRequest, NextResponse } from "next/server";
  * @description This endpoint is used to retrieve a token for the LiveKit
  */
 export async function GET(req: NextRequest) {
-  const supabase = createClient();
-  const session = (await supabase).auth.getUser();
-
   const url = new URL(req.url);
   const interviewId = url.searchParams.get("id");
 

@@ -2,11 +2,17 @@ import { createClient } from "@/utils/supabase/client";
 import { InterviewData, InterviewFeedback } from "@/types/interview";
 import { generateCustomQuestions } from "@/utils/generate-custom-question";
 import { generatePersonalQuestions } from "@/utils/generate-personal-questions";
+import { UserService } from "./user.service";
 
 /**
  * Service for handling interview-related database operations
  */
 export class InterviewService {
+  private userService: UserService;
+  constructor() {
+    this.userService = new UserService();
+  }
+
   public async saveInterviewToSupabase(interviewData: InterviewData) {
     try {
       const supabase = createClient();
@@ -133,58 +139,88 @@ export class InterviewService {
     interviewId: string,
     result: InterviewFeedback
   ) {
-    const supabase = createClient();
+    try {
+      // Use service client to bypass RLS
+      const serviceClient = this.userService.createServiceClient();
 
-    // Create interview details
-    const { data: interviewDetails, error: interviewDetailsError } =
-      await supabase
-        .from("interview_details")
-        .insert({ fk_interview_id: interviewId })
-        .select("*")
-        .single();
+      // Create interview details
+      const { data: interviewDetails, error: interviewDetailsError } =
+        await serviceClient
+          .from("interview_details")
+          .insert({ fk_interview_id: interviewId, video: "" })
+          .select("*")
+          .single();
 
-    if (interviewDetailsError) {
-      throw new Error(
-        `Error inserting interview detail: ${interviewDetailsError.message}`
-      );
-    }
-
-    // Save feedback items
-    const feedback = result.feedbacks.map(async (feedback, index) => {
-      const { error: feedbackResponseError } = await supabase
-        .from("feedback")
-        .insert({
-          fk_interview_details_id: interviewDetails.id,
-          label: feedback.label,
-          question: feedback.question,
-          answer: feedback.yourAnswer,
-          feedback: feedback.feedback,
-          suggesstion_for_improvement: feedback.suggesstionForImprovement,
-        });
-
-      if (feedbackResponseError) {
+      if (interviewDetailsError) {
+        console.error(
+          "Error inserting interview details:",
+          interviewDetailsError
+        );
         throw new Error(
-          `Error saving feedback ${index}: ${feedbackResponseError}`
+          `Error inserting interview detail: ${interviewDetailsError.message}`
         );
       }
-    });
 
-    // Save summary
-    const { error: summaryError } = await supabase.from("summaries").insert({
-      fk_interview_details_id: interviewDetails.id,
-      relevant_responses: result.summary.relevantResponses,
-      clarity_and_structure: result.summary.clarityAndStructure,
-      professional_language: result.summary.professionalLanguage,
-      initial_ideas: result.summary.initialIdeas,
-      additional_notable_aspects: result.summary.additionalNotableAspects,
-      score: result.summary.score,
-    });
+      // Save feedback items - process them in parallel with Promise.all
+      const feedbackPromises = result.feedback.map(async (feedback, index) => {
+        const { error: feedbackResponseError } = await serviceClient
+          .from("feedback")
+          .insert({
+            fk_interview_details_id: interviewDetails.id,
+            label: feedback.label,
+            question: feedback.question,
+            answer: feedback.yourAnswer,
+            feedback: feedback.feedback,
+            suggesstion_for_improvement: feedback.suggestionsForImprovement,
+          });
 
-    if (summaryError) {
-      throw new Error(`Error saving summary: ${summaryError}`);
+        if (feedbackResponseError) {
+          console.error(
+            `Error saving feedback ${index}:`,
+            feedbackResponseError
+          );
+          throw new Error(
+            `Error saving feedback ${index}: ${feedbackResponseError.message}`
+          );
+        }
+
+        return true; // Return success
+      });
+
+      // Wait for all feedback items to be saved
+      await Promise.all(feedbackPromises);
+
+      // Save summary
+      const { error: summaryError } = await serviceClient
+        .from("summaries")
+        .insert({
+          fk_interview_details_id: interviewDetails.id,
+          relevant_responses: result.summary.relevantResponses,
+          clarity_and_structure: result.summary.clarityAndStructure,
+          professional_language: result.summary.professionalLanguage,
+          initial_ideas: result.summary.initialIdeas,
+          additional_notable_aspects: result.summary.additionalNotableAspects,
+          score: result.summary.score,
+        });
+
+      if (summaryError) {
+        console.error("Error saving summary:", summaryError);
+        throw new Error(`Error saving summary: ${summaryError.message}`);
+      }
+
+      return {
+        status: true,
+        message: "Interview feedback saved successfully",
+        data: interviewDetails,
+      };
+    } catch (error: any) {
+      console.error("Error in saveFeedbackData:", error);
+      return {
+        status: false,
+        message: `Failed to save feedback data: ${error.message}`,
+        error: error.message || "Unknown error",
+      };
     }
-
-    return interviewDetails;
   }
 
   public async getInterviewsByUser() {
