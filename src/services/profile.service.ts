@@ -1,10 +1,16 @@
 import { Profile } from "@/types";
 import { createClient } from "@/utils/supabase/client";
+import { UserService } from "./user.service";
 
 /**
  * Service for handling profile-related database operations
  */
 export class ProfileService {
+  private userService: UserService;
+  constructor() {
+    this.userService = new UserService();
+  }
+
   /**
    * Create a new profile for the current user
    * @param data Profile data to create
@@ -38,24 +44,16 @@ export class ProfileService {
       // Get the current auth user ID
       const authUserId = session.user.id;
 
-      // Get the user record to get the correct user ID from users table
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("auth_id", authUserId)
-        .single();
+      // Get the user data from authID
+      const userData = await this.userService.getAuthUserWithServiceRole(
+        authUserId
+      );
 
-      if (userError || !userData) {
-        return {
-          status: false,
-          message: `User account not found: ${
-            userError?.message || "Please complete registration"
-          }`,
-          error: "USER_NOT_FOUND",
-        };
+      if (!userData.status) {
+        throw new Error("Error from authenticated user " + userData.error);
       }
 
-      const userId = userData.id;
+      const userId = userData.data.id;
 
       // Now use the correct user ID from the users table
       const { data: profile, error: profileError } = await supabase
@@ -193,14 +191,12 @@ export class ProfileService {
       }
 
       // Get user data
-      const { data: user, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("auth_id", current_user.id)
-        .single();
+      const userData = await this.userService.getAuthUserWithServiceRole(
+        current_user.id
+      );
 
-      if (userError) {
-        throw new Error(`Error fetching profile: ${userError.message}`);
+      if (!userData.status) {
+        throw new Error("Error from authenticated user " + userData.error);
       }
 
       // Get profile with related data
@@ -214,7 +210,7 @@ export class ProfileService {
           skills (*)
         `
         )
-        .eq("fk_user_id", user.id)
+        .eq("fk_user_id", userData.data.id)
         .single();
 
       if (profileError) {

@@ -88,7 +88,7 @@ export function parseInterviewFeedback(feedbacks: string[]) {
     }
 
     return {
-      feedbacks: feedback_result,
+      feedback: feedback_result,
       summary: performance_summary,
     };
   }

@@ -15,7 +15,7 @@ export class UserService {
    * @param setError Function to set error messages
    * @returns Object containing user data or success message
    */
-  public async saveUserToSupabase(setError: (error: string | null) => void) {
+  public async saveUserToSupabase() {
     try {
       const supabase = createClient();
       const session = await supabase.auth.getUser();
@@ -98,7 +98,7 @@ export class UserService {
 
     return data.user;
   }
-  
+
   /**
    * Get a user by their auth ID using the service client (bypasses RLS)
    * @param authUserId The auth ID of the user to retrieve

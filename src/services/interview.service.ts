@@ -2,13 +2,18 @@ import { createClient } from "@/utils/supabase/client";
 import { InterviewData, InterviewFeedback } from "@/types/interview";
 import { generateCustomQuestions } from "@/utils/generate-custom-question";
 import { generatePersonalQuestions } from "@/utils/generate-personal-questions";
-import { UserService } from "./user.service";
 import { createServiceClient } from "@/utils/supabase/server";
+import { UserService } from "./user.service";
 
 /**
  * Service for handling interview-related database operations
  */
 export class InterviewService {
+  private userService: UserService;
+  constructor() {
+    this.userService = new UserService();
+  }
+
   public async saveInterviewToSupabase(interviewData: InterviewData) {
     try {
       const supabase = createClient();
@@ -28,23 +33,15 @@ export class InterviewService {
       const authUserId = session.user.id;
 
       // Get the user record to get the correct user ID from users table
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("auth_id", authUserId)
-        .single();
+      const userData = await this.userService.getAuthUserWithServiceRole(
+        authUserId
+      );
 
-      if (userError || !userData) {
-        return {
-          status: false,
-          message: `User account not found: ${
-            userError?.message || "Please complete registration"
-          }`,
-          error: "USER_NOT_FOUND",
-        };
+      if (!userData.status) {
+        throw new Error("Error from authenticated user " + userData.error);
       }
 
-      const userId = userData.id;
+      const userId = userData.data.id;
 
       if (interviewData.type === "PERSONAL") {
         // Fetch user profile details
@@ -231,15 +228,13 @@ export class InterviewService {
         throw new Error("Unauthorized");
       }
 
-      // Get user data
-      const { data: user, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("auth_id", current_user.id)
-        .single();
+      // Get the user record to get the correct user ID from users table
+      const userData = await this.userService.getAuthUserWithServiceRole(
+        current_user.id
+      );
 
-      if (userError) {
-        throw new Error(`Error fetching profile: ${userError.message}`);
+      if (!userData.status) {
+        throw new Error("Error from authenticated user " + userData.error);
       }
 
       const { data: interviews, error: supabaseError } = await supabase
@@ -253,7 +248,7 @@ export class InterviewService {
         )
       `
         )
-        .eq("fk_user_id", user.id);
+        .eq("fk_user_id", userData.data.id);
 
       if (supabaseError) {
         throw new Error(`Supabase error: ${supabaseError.message}`);
@@ -328,8 +323,6 @@ export class InterviewService {
         throw new Error(`Supabase error: ${supabaseError.message}`);
       }
 
-      console.log(interviews);
-
       if (!(interviews.length > 0)) {
         throw new Error("Interview not found");
       }
@@ -362,15 +355,13 @@ export class InterviewService {
         throw new Error("Unauthorized");
       }
 
-      // Get user data
-      const { data: user, error: userError } = await supabase
-        .from("users")
-        .select("*")
-        .eq("auth_id", current_user.id)
-        .single();
+      // Get the user record to get the correct user ID from users table
+      const userData = await this.userService.getAuthUserWithServiceRole(
+        current_user.id
+      );
 
-      if (userError) {
-        throw new Error(`Error fetching profile: ${userError.message}`);
+      if (!userData.status) {
+        throw new Error("Error from authenticated user " + userData.error);
       }
 
       // Check if the interview belongs to the user
@@ -388,7 +379,7 @@ export class InterviewService {
         throw new Error("Interview not found");
       }
 
-      if (existingInterview.fk_user_id !== user.id) {
+      if (existingInterview.fk_user_id !== userData.data.id) {
         throw new Error("You don't have permission to delete this interview");
       }
 
