@@ -48,7 +48,9 @@ import { UserService } from "@/services/user.service";
 
 export async function POST(req: NextRequest) {
   try {
-    const { room_id: interviewId, authId, transcription } = await req.json();
+    const { room_id, transcription } = await req.json();
+    const [interviewId, authId] = room_id.split("&");
+
     // Formatting transcription data
     const transcript = [];
     for (let i = 0; i < transcription.length; i += 2) {

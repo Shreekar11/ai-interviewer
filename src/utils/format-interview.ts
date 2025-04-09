@@ -63,7 +63,7 @@ export const formatInterviewData = (rawData: any[]) => {
   
       // Combine into complete feedback object
       const interviewFeedback: InterviewFeedback = {
-        feedbacks: feedbackItems,
+        feedback: feedbackItems,
         summary: summary,
       };
   

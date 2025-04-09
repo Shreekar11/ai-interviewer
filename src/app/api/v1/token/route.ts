@@ -12,8 +12,9 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   const interviewId = url.searchParams.get("id");
+  const authId = url.searchParams.get("authId");
 
-  const roomName = interviewId;
+  const roomName = `${interviewId}&${authId}`;
   const apiKey = process.env.LIVEKIT_API_KEY;
   const apiSecret = process.env.LIVEKIT_API_SECRET;
   const at = new AccessToken(apiKey, apiSecret, {

@@ -47,7 +47,7 @@ const InterviewsPage = () => {
               date={interview.interviewData.createdAt || ""}
               type={type as "PERSONAL" | "CUSTOM"}
               tags={interview.interviewData.skills || []}
-              isFeedback={interview.interviewFeedback.feedbacks.length > 0}
+              isFeedback={interview.interviewFeedback.feedback.length > 0}
             />
           ))}
         </div>

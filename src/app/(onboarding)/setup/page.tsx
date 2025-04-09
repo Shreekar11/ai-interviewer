@@ -8,23 +8,20 @@ import { UserService } from "@/services/user.service";
 const OnboardingPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const handleSaveUser = async () => {
     try {
       const userService = new UserService();
       setIsLoading(true);
-      setError(null);
 
-      const res = await userService.saveUserToSupabase(setError);
-      
+      const res = await userService.saveUserToSupabase();
+
       if (res.isNewUser) {
         router.push("/onboarding");
       } else {
         router.push("/dashboard");
       }
     } catch (err: any) {
-      setError(err.message || "An error occurred during signup");
       console.error("Error: ", err);
     } finally {
       setIsLoading(false);

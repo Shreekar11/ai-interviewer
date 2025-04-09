@@ -52,7 +52,7 @@ const DashboardContent = ({ loading, interviews }: DashboardContentProps) => {
                         title={interview.interviewData.name}
                         date={`${interview.interviewData.createdAt} • ${interview.interviewData.name}`}
                         type={interview.interviewData.type}
-                        isFeedback={interview.interviewFeedback.feedbacks.length > 0}
+                        isFeedback={interview.interviewFeedback.feedback.length > 0}
                       />
                     ))}
                 </div>
@@ -89,7 +89,7 @@ const DashboardContent = ({ loading, interviews }: DashboardContentProps) => {
                         date={interview.interviewData.createdAt || ""}
                         type={interview.interviewData.type}
                         tags={interview.interviewData.skills || []}
-                        isFeedback={interview.interviewFeedback.feedbacks.length > 0}
+                        isFeedback={interview.interviewFeedback.feedback.length > 0}
                       />
                     ))}
                 </div>

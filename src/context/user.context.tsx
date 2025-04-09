@@ -18,6 +18,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User>({
+    id: "",
     name: "",
     email: "",
     avatar: null,
@@ -39,15 +40,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       }
 
       if (!userData.user) {
-        setUser({ name: "", email: "", avatar: null });
+        setUser({ id: "", name: "", email: "", avatar: null });
         setIsLoading(false);
         return;
       }
 
+      const { id } = userData.user;
       const { name, email, avatar_url } = userData.user
         ?.user_metadata as UserMetadata;
 
       setUser({
+        id,
         name,
         email,
         avatar: avatar_url,
@@ -69,7 +72,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
         throw new Error(`Error signing out: ${error.message}`);
       }
 
-      setUser({ name: "", email: "", avatar: null });
+      setUser({ id: "", name: "", email: "", avatar: null });
     } catch (err: any) {
       console.error("Error during logout:", err);
       setError(err.message || "Failed to log out");

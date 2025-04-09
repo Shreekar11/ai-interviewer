@@ -16,7 +16,7 @@ const useInterviewsType = (type: string | string[]) => {
         throw new Error(result.message || "Error in retrieving interviews");
       }
 
-      const formattedInterviews = formatInterviewData(result.data);
+      const formattedInterviews = formatInterviewData(result.data || []);
 
       setInterviews(formattedInterviews);
     } catch (err) {

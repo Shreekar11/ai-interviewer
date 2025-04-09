@@ -1,84 +1,92 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useParams, useRouter } from "next/navigation"
-import Webcam from "react-webcam"
-import { Camera, Mic, AlertCircle, CheckCircle2, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Webcam from "react-webcam";
+import { Camera, Mic, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { cn } from "@/lib/utils"
-import MicLevelIndicator from "@/components/interview/mic-indicator"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
+import MicLevelIndicator from "@/components/interview/mic-indicator";
+import { useUser } from "@/context/user.context";
 
 const InterviewSection = () => {
-  const router = useRouter()
-  const params = useParams()
-  const interviewId = params.id
+  const router = useRouter();
+  const params = useParams();
+  const interviewId = params.id;
 
-  const [micEnabled, setMicEnabled] = useState(false)
-  const [webCamEnable, setWebCamEnable] = useState(false)
-  const [showMicIndicator, setShowMicIndicator] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { user } = useUser();
+  const [micEnabled, setMicEnabled] = useState(false);
+  const [webCamEnable, setWebCamEnable] = useState(false);
+  const [showMicIndicator, setShowMicIndicator] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [check, setCheck] = useState({
     first: false,
     second: false,
-  })
+  });
 
-  const allChecked = check.first && check.second
-  const readinessPercentage = (check.first ? 50 : 0) + (check.second ? 50 : 0)
+  const allChecked = check.first && check.second;
+  const readinessPercentage = (check.first ? 50 : 0) + (check.second ? 50 : 0);
 
   const handleEnableCamera = (checked: any) => {
-    setCheck((prev) => ({ ...prev, first: checked === true }))
-    setWebCamEnable(checked === true)
-  }
+    setCheck((prev) => ({ ...prev, first: checked === true }));
+    setWebCamEnable(checked === true);
+  };
 
   const handleMicPermission = async (checked: string | boolean) => {
-    setCheck((prev) => ({ ...prev, second: checked === true }))
+    setCheck((prev) => ({ ...prev, second: checked === true }));
 
     if (checked) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
-        })
-        setMicEnabled(true)
-        setShowMicIndicator(true)
+        });
+        setMicEnabled(true);
+        setShowMicIndicator(true);
       } catch (err) {
-        setMicEnabled(false)
-        setShowMicIndicator(false)
-        setError("Microphone access denied. Please check your browser permissions.")
+        setMicEnabled(false);
+        setShowMicIndicator(false);
+        setError(
+          "Microphone access denied. Please check your browser permissions."
+        );
       }
     } else {
-      setMicEnabled(false)
-      setShowMicIndicator(false)
+      setMicEnabled(false);
+      setShowMicIndicator(false);
     }
-  }
+  };
 
   const handleConnect = async () => {
-    if (!allChecked) return
+    if (!allChecked) return;
 
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const resp = await fetch(`/api/v1/token?id=${interviewId}`)
-      const data = await resp.json()
+      const resp = await fetch(
+        `/api/v1/token?id=${interviewId}&authId=${user.id}`
+      );
+      const data = await resp.json();
 
       if (data.accessToken) {
-        router.push(`/interview/room?token=${data.accessToken}&url=${data.url}`)
+        router.push(
+          `/interview/room?token=${data.accessToken}&url=${data.url}`
+        );
       } else {
-        setError(data.error || "Failed to get access token")
+        setError(data.error || "Failed to get access token");
       }
     } catch (err) {
-      setError("An error occurred while connecting to the interview")
-      console.error(err)
+      setError("An error occurred while connecting to the interview");
+      console.error(err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto py-8 px-4 my-20">
@@ -89,8 +97,8 @@ const InterviewSection = () => {
               Be ready for your Interview
             </h1>
             <p className="text-[#656D76] mt-2 max-w-2xl">
-              You&apos;ll be taking a 10 minute interview about your prior work experience. Relax, you&apos;ve done this
-              before.
+              You&apos;ll be taking a 10 minute interview about your prior work
+              experience. Relax, you&apos;ve done this before.
             </p>
           </div>
         </div>
@@ -105,9 +113,11 @@ const InterviewSection = () => {
                     mirrored={true}
                     onUserMedia={() => setWebCamEnable(true)}
                     onUserMediaError={() => {
-                      setWebCamEnable(false)
-                      setCheck((prev) => ({ ...prev, first: false }))
-                      setError("Camera access denied. Please check your browser permissions.")
+                      setWebCamEnable(false);
+                      setCheck((prev) => ({ ...prev, first: false }));
+                      setError(
+                        "Camera access denied. Please check your browser permissions."
+                      );
                     }}
                     videoConstraints={{
                       width: 640,
@@ -133,12 +143,21 @@ const InterviewSection = () => {
 
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-semibold text-[#0C0C0C]">Ready to join?</h2>
-              <p className="text-[#71717A] text-sm">Please ensure your devices are properly configured.</p>
+              <h2 className="text-2xl font-semibold text-[#0C0C0C]">
+                Ready to join?
+              </h2>
+              <p className="text-[#71717A] text-sm">
+                Please ensure your devices are properly configured.
+              </p>
             </div>
 
             <div className="space-y-4">
-              <Card className={cn("transition-colors", check.first ? "border-blue-200 bg-blue-50/50" : "")}>
+              <Card
+                className={cn(
+                  "transition-colors",
+                  check.first ? "border-blue-200 bg-blue-50/50" : ""
+                )}
+              >
                 <CardContent className="flex items-center p-4 px-3 gap-4">
                   <Camera className="text-[#161619] h-6 w-6" />
 
@@ -157,12 +176,19 @@ const InterviewSection = () => {
                 </CardContent>
               </Card>
 
-              <Card className={cn("transition-colors", check.second ? "border-blue-200 bg-blue-50/50" : "")}>
+              <Card
+                className={cn(
+                  "transition-colors",
+                  check.second ? "border-blue-200 bg-blue-50/50" : ""
+                )}
+              >
                 <CardContent className="flex items-center p-4 px-3 gap-4">
                   <Mic className="text-[#161619] h-6 w-6" />
 
                   <div className="flex-1 flex flex-col justify-start items-start">
-                    <div className="text-[#0C0C0C] text-md">Enable Microphone</div>
+                    <div className="text-[#0C0C0C] text-md">
+                      Enable Microphone
+                    </div>
                     <div className="text-[#71717A] text-xs w-full text-start">
                       Please ensure your microphone is properly configured.
                     </div>
@@ -172,7 +198,7 @@ const InterviewSection = () => {
                         barCount={10}
                         activeColor="#2A50B0"
                         onLevelChange={(level) => {
-                          console.log("Audio level:", level)
+                          console.log("Audio level:", level);
                         }}
                       />
                     )}
@@ -205,7 +231,11 @@ const InterviewSection = () => {
                     Connecting...
                   </>
                 ) : (
-                  <>{allChecked ? "Start Interview" : `Complete Setup (${readinessPercentage}%)`}</>
+                  <>
+                    {allChecked
+                      ? "Start Interview"
+                      : `Complete Setup (${readinessPercentage}%)`}
+                  </>
                 )}
               </Button>
 
@@ -219,7 +249,7 @@ const InterviewSection = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InterviewSection
+export default InterviewSection;

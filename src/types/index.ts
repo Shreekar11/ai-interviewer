@@ -30,6 +30,7 @@ export interface Skill {
 
 // Define the User type
 export interface User {
+  id: string;
   name: string;
   email: string;
   avatar: string | null;

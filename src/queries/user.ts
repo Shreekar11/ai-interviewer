@@ -1,9 +1,9 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { createServiceClient } from "@/utils/supabase/server";
 
 export const getUser = async () => {
-  const supabase = await createClient();
+  const supabase = await createServiceClient();
   const {
     data: { user },
     error,
