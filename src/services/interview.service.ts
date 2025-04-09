@@ -3,16 +3,12 @@ import { InterviewData, InterviewFeedback } from "@/types/interview";
 import { generateCustomQuestions } from "@/utils/generate-custom-question";
 import { generatePersonalQuestions } from "@/utils/generate-personal-questions";
 import { UserService } from "./user.service";
+import { createServiceClient } from "@/utils/supabase/server";
 
 /**
  * Service for handling interview-related database operations
  */
 export class InterviewService {
-  private userService: UserService;
-  constructor() {
-    this.userService = new UserService();
-  }
-
   public async saveInterviewToSupabase(interviewData: InterviewData) {
     try {
       const supabase = createClient();
@@ -141,11 +137,11 @@ export class InterviewService {
   ) {
     try {
       // Use service client to bypass RLS
-      const serviceClient = this.userService.createServiceClient();
+      const supabase = createServiceClient();
 
       // Create interview details
       const { data: interviewDetails, error: interviewDetailsError } =
-        await serviceClient
+        await supabase
           .from("interview_details")
           .insert({ fk_interview_id: interviewId, video: "" })
           .select("*")
@@ -163,7 +159,7 @@ export class InterviewService {
 
       // Save feedback items - process them in parallel with Promise.all
       const feedbackPromises = result.feedback.map(async (feedback, index) => {
-        const { error: feedbackResponseError } = await serviceClient
+        const { error: feedbackResponseError } = await supabase
           .from("feedback")
           .insert({
             fk_interview_details_id: interviewDetails.id,
@@ -191,17 +187,15 @@ export class InterviewService {
       await Promise.all(feedbackPromises);
 
       // Save summary
-      const { error: summaryError } = await serviceClient
-        .from("summaries")
-        .insert({
-          fk_interview_details_id: interviewDetails.id,
-          relevant_responses: result.summary.relevantResponses,
-          clarity_and_structure: result.summary.clarityAndStructure,
-          professional_language: result.summary.professionalLanguage,
-          initial_ideas: result.summary.initialIdeas,
-          additional_notable_aspects: result.summary.additionalNotableAspects,
-          score: result.summary.score,
-        });
+      const { error: summaryError } = await supabase.from("summaries").insert({
+        fk_interview_details_id: interviewDetails.id,
+        relevant_responses: result.summary.relevantResponses,
+        clarity_and_structure: result.summary.clarityAndStructure,
+        professional_language: result.summary.professionalLanguage,
+        initial_ideas: result.summary.initialIdeas,
+        additional_notable_aspects: result.summary.additionalNotableAspects,
+        score: result.summary.score,
+      });
 
       if (summaryError) {
         console.error("Error saving summary:", summaryError);
@@ -271,15 +265,16 @@ export class InterviewService {
         data: interviews,
       };
     } catch (err: any) {
-      console.error("Error: ", err);
-      throw err;
+      console.error("Error in getInterviewsByUser:", err);
+      return {
+        status: false,
+        message: `Failed to retrieve interviews data: ${err.message}`,
+        error: err.message || "Unknown error",
+      };
     }
   }
 
-  public async getInterviewById(
-    interviewId: string,
-    setError: (error: string | null) => void
-  ) {
+  public async getInterviewById(interviewId: string) {
     try {
       const supabase = createClient();
 
@@ -303,9 +298,12 @@ export class InterviewService {
         data: interview,
       };
     } catch (err: any) {
-      setError(err.message || "An error occurred while fetching the interview");
-      console.error("Error: ", err);
-      throw err;
+      console.error("Error in getInterviewById:", err);
+      return {
+        status: false,
+        message: `Failed to retrieve interviews data: ${err.message}`,
+        error: err.message || "Unknown error",
+      };
     }
   }
 
@@ -342,15 +340,16 @@ export class InterviewService {
         data: interviews,
       };
     } catch (err: any) {
-      console.error("Error: ", err);
-      throw err;
+      console.error("Error in getInterviewsByType:", err);
+      return {
+        status: false,
+        message: `Failed to retrieve interviews data: ${err.message}`,
+        error: err.message || "Unknown error",
+      };
     }
   }
 
-  public async deleteInterview(
-    interviewId: string,
-    setError: (error: string | null) => void
-  ) {
+  public async deleteInterview(interviewId: string) {
     try {
       const supabase = await createClient();
       // Get the current user
@@ -404,9 +403,12 @@ export class InterviewService {
 
       return { status: true };
     } catch (err: any) {
-      setError(err.message || "An error occurred while deleting the interview");
-      console.error("Error: ", err);
-      throw err;
+      console.error("Error in deleteInterview:", err);
+      return {
+        status: false,
+        message: `Failed to delete interviews data: ${err.message}`,
+        error: err.message || "Unknown error",
+      };
     }
   }
 }

@@ -179,52 +179,61 @@ export class ProfileService {
    * @returns The profile with related data
    */
   public async getProfileByUserId() {
-    const supabase = createClient();
+    try {
+      const supabase = createClient();
 
-    // Get the current user
-    const {
-      data: { user: current_user },
-      error: authError,
-    } = await supabase.auth.getUser();
+      // Get the current user
+      const {
+        data: { user: current_user },
+        error: authError,
+      } = await supabase.auth.getUser();
 
-    if (authError || !current_user) {
-      throw new Error("Unauthorized");
-    }
+      if (authError || !current_user) {
+        throw new Error("Unauthorized");
+      }
 
-    // Get user data
-    const { data: user, error: userError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("auth_id", current_user.id)
-      .single();
+      // Get user data
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("auth_id", current_user.id)
+        .single();
 
-    if (userError) {
-      throw new Error(`Error fetching profile: ${userError.message}`);
-    }
+      if (userError) {
+        throw new Error(`Error fetching profile: ${userError.message}`);
+      }
 
-    // Get profile with related data
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select(
+      // Get profile with related data
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select(
+          `
+          *,
+          experiences (*),
+          projects (*),
+          skills (*)
         `
-        *,
-        experiences (*),
-        projects (*),
-        skills (*)
-      `
-      )
-      .eq("fk_user_id", user.id)
-      .single();
+        )
+        .eq("fk_user_id", user.id)
+        .single();
 
-    if (profileError) {
-      throw new Error(`Error fetching profile: ${profileError.message}`);
+      if (profileError) {
+        throw new Error(`Error fetching profile: ${profileError.message}`);
+      }
+
+      return {
+        status: true,
+        message: "Profile retrieved successfully!",
+        data: profile,
+      };
+    } catch (error: any) {
+      console.error("Error in getProfileByUserId:", error);
+      return {
+        status: false,
+        message: `Failed to retrieve profile data: ${error.message}`,
+        error: error.message || "Unknown error",
+      };
     }
-
-    return {
-      status: true,
-      message: "Profile retrieved successfully!",
-      data: profile,
-    };
   }
 
   /**
@@ -345,7 +354,12 @@ export class ProfileService {
 
       return updatedProfile;
     } catch (error: any) {
-      throw new Error(`Error updating profile: ${error.message}`);
+      console.error("Error in updateProfile:", error);
+      return {
+        status: false,
+        message: `Failed to updating profile data: ${error.message}`,
+        error: error.message || "Unknown error",
+      };
     }
   }
 }

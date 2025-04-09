@@ -106,8 +106,6 @@ export async function POST(req: NextRequest) {
     // Try to get user with service role to bypass RLS
     const userResult = await userService.getAuthUserWithServiceRole(authId);
 
-    console.log(userResult);
-
     if (!userResult.status) {
       return NextResponse.json(
         {
