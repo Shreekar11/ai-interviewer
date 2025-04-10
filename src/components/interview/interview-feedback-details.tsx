@@ -66,7 +66,7 @@ export function InterviewFeedbackDetails({
         className="w-full"
       >
         <div className="flex justify-between items-center mb-4">
-          <TabsList className="bg-blue-50 border border-blue-100">
+          <TabsList className="bg-gray-100">
             <TabsTrigger
               value="all"
               className="data-[state=active]:bg-blue-500 data-[state=active]:text-white"

@@ -92,7 +92,7 @@ export default function InterviewDialog() {
       });
 
       if (!result.status) {
-        throw new Error("Error saving interview ", result.error as any);
+        throw new Error("Error saving interview ", result.message as any);
       }
       // Reset form
       setFormData({ name: "", description: "" });
@@ -113,8 +113,7 @@ export default function InterviewDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-blue-500 hover:bg-blue-600 text-white">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          New Interview
+          Create a new Interview
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -122,7 +121,8 @@ export default function InterviewDialog() {
           <DialogHeader>
             <DialogTitle>Create New Interview</DialogTitle>
             <DialogDescription>
-              Set up a new interview session. Click proceed when you&apos;re done.
+              Set up a new interview session. Click proceed when you&apos;re
+              done.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">

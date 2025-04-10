@@ -16,21 +16,16 @@ export class InterviewService {
 
   public async saveInterviewToSupabase(interviewData: InterviewData) {
     try {
-      const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      // Use service client to bypass RLS
+      const supabase = createServiceClient();
+      const session = await this.userService.getCurrentUser();
 
-      if (!session) {
-        return {
-          status: false,
-          message: "No active session found. Please sign in again.",
-          error: "AUTH_ERROR",
-        };
+      if (!session.status || !session.data) {
+        throw new Error("Error from authenticated user " + session.error);
       }
 
       // Get the current auth user ID
-      const authUserId = session.user.id;
+      const authUserId = session.data.id;
 
       // Get the user record to get the correct user ID from users table
       const userData = await this.userService.getAuthUserWithServiceRole(

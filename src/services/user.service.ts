@@ -88,15 +88,28 @@ export class UserService {
    * Get the current authenticated user
    * @returns The authenticated user or null
    */
-  static async getCurrentUser() {
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.getUser();
+  public async getCurrentUser() {
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.getUser();
 
-    if (error) {
-      throw new Error(`Error fetching user: ${error.message}`);
+      if (error) {
+        throw new Error(`Error fetching user: ${error.message}`);
+      }
+
+      return {
+        status: true,
+        message: "User session retrieved successfully!",
+        data: data.user,
+      };
+    } catch (err: any) {
+      console.error("User session unexpected error:", err);
+      return {
+        status: false,
+        message: `User session error: ${err.message || "Unknown error"}`,
+        error: "USER_SESSION_ERROR",
+      };
     }
-
-    return data.user;
   }
 
   /**
