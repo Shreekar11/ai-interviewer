@@ -1,10 +1,12 @@
-import { getUser } from "@/queries/user";
-import { AuthForm } from "@/components/auth/auth-form";
-import { redirect } from "next/navigation";
+"use client";
 
-export default async function SignUpPage() {
-  const user = await getUser();
-  if (user) {
+import { redirect } from "next/navigation";
+import { useUser } from "@/context/user.context";
+import { AuthForm } from "@/components/auth/auth-form";
+
+export default function SignInPage() {
+  const { user } = useUser();
+  if (user.id) {
     return redirect("/");
   }
 
