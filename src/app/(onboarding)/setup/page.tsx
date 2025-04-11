@@ -4,8 +4,9 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserService } from "@/services/user.service";
+import { withAuth } from "@/context/auth.context";
 
-const OnboardingPage = () => {
+const SetupPage = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,4 +54,4 @@ const OnboardingPage = () => {
   );
 };
 
-export default OnboardingPage;
+export default withAuth(SetupPage);

@@ -23,6 +23,7 @@ import { ProfileSkeleton } from "@/components/profile/profile-skeleton";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { withAuth } from "@/context/auth.context";
 
 const ProfilePage = () => {
   const { loading, profile: userData } = useProfile();
@@ -250,4 +251,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default withAuth(ProfilePage);

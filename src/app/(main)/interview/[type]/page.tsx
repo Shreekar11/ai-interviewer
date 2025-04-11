@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import useInterviewsType from "@/hooks/use-interview-type";
 import InterviewCard from "@/components/interview/interview-card";
 import InterviewDialog from "@/components/interview/interview-dialog";
+import { withAuth } from "@/context/auth.context";
 
 const InterviewsPage = () => {
   const params = useParams();
@@ -152,4 +153,4 @@ const InterviewsPage = () => {
   );
 };
 
-export default InterviewsPage;
+export default withAuth(InterviewsPage);

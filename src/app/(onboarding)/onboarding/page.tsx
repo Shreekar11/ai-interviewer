@@ -34,6 +34,7 @@ import { ProfileService } from "@/services/profile.service";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
+import { withAuth } from "@/context/auth.context";
 
 const steps = [
   {
@@ -428,4 +429,4 @@ const OnboardingPage = () => {
   );
 };
 
-export default OnboardingPage;
+export default withAuth(OnboardingPage);

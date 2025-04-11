@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import useInterviewDetails from "@/hooks/use-interview-details";
 import { InterviewFeedbackSkeleton } from "@/components/interview/skeleton-loading";
 import { InterviewFeedbackDetails } from "@/components/interview/interview-feedback-details";
+import { withAuth } from "@/context/auth.context";
 
 const InterviewFeedbackPage = () => {
   const params = useParams();
@@ -24,4 +25,4 @@ const InterviewFeedbackPage = () => {
   );
 };
 
-export default InterviewFeedbackPage;
+export default withAuth(InterviewFeedbackPage);

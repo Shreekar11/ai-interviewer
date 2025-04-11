@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import MicLevelIndicator from "@/components/interview/mic-indicator";
 import { useUser } from "@/context/user.context";
+import { withAuth } from "@/context/auth.context";
 
 const InterviewSection = () => {
   const router = useRouter();
@@ -252,4 +253,4 @@ const InterviewSection = () => {
   );
 };
 
-export default InterviewSection;
+export default withAuth(InterviewSection);

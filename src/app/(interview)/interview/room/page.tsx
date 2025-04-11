@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { withAuth } from "@/context/auth.context";
 
 // Recording Indicator
 const RecordingIndicator = () => (
@@ -266,4 +267,4 @@ const InterviewRoom = () => {
   );
 };
 
-export default InterviewRoom;
+export default withAuth(InterviewRoom);
