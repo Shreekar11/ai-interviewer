@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, X } from "lucide-react";
+import { Lightbulb, PlusCircle, X } from "lucide-react";
 import { Profile } from "@/types";
+import { Card, CardContent } from "../ui/card";
 
 interface SkillsFormProps {
   data: {
@@ -46,43 +47,52 @@ export default function SkillsForm({ data, setFormData }: SkillsFormProps) {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-4">
-        {skills.map((skill, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div className="flex-1">
-              <Label htmlFor={`skill-${index}`} className="sr-only">
-                Skill {index + 1}
-              </Label>
-              <Input
-                id={`skill-${index}`}
-                value={skill.skill_name}
-                onChange={(e) => handleSkillChange(index, e.target.value)}
-                placeholder="Enter a skill (e.g., JavaScript, Project Management)"
-              />
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => removeSkill(index)}
-              disabled={skills.length === 1}
-              className="text-blue-700 hover:text-blue-900 hover:bg-blue-50"
-            >
-              <X className="h-5 w-5" />
-            </Button>
+      <Card className="overflow-hidden">
+        <CardContent className="p-0">
+          <div className="bg-blue-50 p-4 flex items-center gap-2 border-b">
+            <Lightbulb className="h-5 w-5 text-blue-500" />
+            <h3 className="font-medium text-blue-900">Your Skills</h3>
           </div>
-        ))}
-      </div>
-
-      <Button
-        type="button"
-        variant="outline"
-        onClick={addSkill}
-        className="mt-2 flex items-center gap-2"
-      >
-        <PlusCircle className="h-4 w-4" />
-        Add Another Skill
-      </Button>
+          <div className="space-y-4 px-4 py-6">
+          <div className="space-y-4">
+            {skills.map((skill, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <div className="flex-1">
+                  <Label htmlFor={`skill-${index}`} className="sr-only">
+                    Skill {index + 1}
+                  </Label>
+                  <Input
+                    id={`skill-${index}`}
+                    value={skill.skill_name}
+                    onChange={(e) => handleSkillChange(index, e.target.value)}
+                    placeholder="Enter a skill (e.g., JavaScript, Project Management)"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeSkill(index)}
+                  disabled={skills.length === 1}
+                  className="text-blue-700 hover:text-blue-900 hover:bg-blue-50"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addSkill}
+            className="mt-2 flex items-center gap-2"
+          >
+            <PlusCircle className="h-4 w-4" />
+            Add Another Skill
+          </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { AnimatedShinyText } from "@/components/magicui/animated-shiny-text";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { Moon_4 } from "@/components/layout/logo";
 
 export default function LandingPage() {
   // Animation variants for text elements
@@ -52,14 +53,15 @@ export default function LandingPage() {
               className="flex items-center"
             >
               {" "}
-              <Image
-                src="/assets/logo.png"
+              {/* <Image
+                src="/assets/brand.png"
                 alt="logo"
                 height={30}
                 width={30}
                 className="px-1"
-              />
-              <div className="text-2xl font-bold text-blue-600">
+              /> */}
+              <Moon_4 className="" />
+              <div className="text-2xl ml-3 font-bold text-blue-600">
                 <span className="tracking-tight">Interview</span>
                 <span className="tracking-tight text-blue-800">Prep</span>
               </div>

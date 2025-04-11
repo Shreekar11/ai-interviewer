@@ -53,7 +53,7 @@ const CustomParticipantTile = ({ trackRef }: { trackRef: TrackReference }) => {
             }`}
           >
             <img
-              src="/assets/logo.png"
+              src="/assets/brand.png"
               alt="Participant Avatar"
               className="h-24 w-24 p-4"
             />
@@ -145,7 +145,7 @@ const InterviewerJoiningOverlay = () => {
         <div className="flex flex-col items-center space-y-3">
           <div className="animate-pulse">
             <img
-              src="/assets/logo.png"
+              src="/assets/brand.png"
               alt="AI Interviewer"
               className="h-16 w-16 opacity-70"
             />
