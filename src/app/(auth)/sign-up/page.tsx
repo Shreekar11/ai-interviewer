@@ -5,6 +5,7 @@ import { useUser } from "@/context/user.context";
 import { AuthForm } from "@/components/auth/auth-form";
 import Image from "next/image";
 import { CheckCircle, ChevronRight } from "lucide-react";
+import { Suspense } from "react";
 
 export default function SignUpPage() {
   const { user } = useUser();
@@ -110,7 +111,9 @@ export default function SignUpPage() {
               Sign in to continue your interview practice
             </p>
           </div>
-          <AuthForm mode="signup" />
+          <Suspense fallback={<div>Loading...</div>}>
+            <AuthForm mode="signup" />
+          </Suspense>
         </div>
       </div>
     </div>

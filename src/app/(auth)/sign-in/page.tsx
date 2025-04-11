@@ -5,6 +5,7 @@ import { useUser } from "@/context/user.context";
 import { AuthForm } from "@/components/auth/auth-form";
 import Image from "next/image";
 import { CheckCircle, ChevronRight } from "lucide-react";
+import { Suspense } from "react";
 
 export default function SignInPage() {
   const { user } = useUser();
@@ -101,7 +102,9 @@ export default function SignInPage() {
 
       {/* Right side - Auth form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
-        <AuthForm mode="signin" />
+        <Suspense fallback={<div>Loading...</div>}>
+          <AuthForm mode="signin" />
+        </Suspense>
       </div>
     </div>
   );
