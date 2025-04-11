@@ -75,13 +75,13 @@ export default function LandingPage() {
             className="flex items-center space-x-4"
           >
             <Button variant="ghost" asChild>
-              <Link href="/signin">Sign in</Link>
+              <Link href="/sign-in">Sign in</Link>
             </Button>
             <Button
               className="bg-blue-600 hover:bg-blue-600/80 shadow-xl 
               transition-all duration-300 hover:shadow-lg hover:translate-y-px"
             >
-              Get started
+              <Link href="/dashboard">Get started</Link>
             </Button>
           </motion.div>
         </nav>

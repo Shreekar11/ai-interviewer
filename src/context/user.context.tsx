@@ -63,32 +63,16 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const logout = async () => {
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        throw new Error(`Error signing out: ${error.message}`);
-      }
-
-      setUser({ id: "", name: "", email: "", avatar: null });
-    } catch (err: any) {
-      console.error("Error during logout:", err);
-      setError(err.message || "Failed to log out");
-    }
-  };
-
   useEffect(() => {
     fetchUser();
   }, []);
 
   const value = {
     user,
+    setUser,
     isLoading,
     error,
     refreshUser: fetchUser,
-    logout,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

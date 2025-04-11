@@ -23,7 +23,9 @@ import { Home, LogOut, User, LaptopMinimal, FileText } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useUser } from "@/context/user.context";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
 
 // Main menu items
 const mainItems = [
@@ -54,10 +56,30 @@ const mainItems = [
 ];
 
 export function AppSidebar() {
+  const router = useRouter();
   const pathName = usePathname();
   const {
     user: { name, email, avatar },
+    setUser,
   } = useUser();
+
+  const handleLogout = async () => {
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        throw new Error(`Error signing out: ${error.message}`);
+      }
+
+      setUser({ id: "", name: "", email: "", avatar: null });
+      toast.success("Log out successful!");
+      router.push("/");
+    } catch (err: any) {
+      console.error("Error during logout:", err);
+      toast.error(err.message || "Falied to log out!");
+    }
+  };
 
   return (
     <Sidebar className="border-r border-border bg-card">
@@ -145,7 +167,10 @@ export function AppSidebar() {
             <div>
               <div className="flex justify-between">
                 <p className="text-sm font-medium">{name}</p>
-                <button className="rounded-md p-1 hover:bg-accent">
+                <button
+                  onClick={handleLogout}
+                  className="rounded-md p-1 hover:bg-accent"
+                >
                   <LogOut className="h-4 w-4 text-muted-foreground" />
                 </button>
               </div>

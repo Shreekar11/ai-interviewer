@@ -34,20 +34,20 @@ export interface User {
   name: string;
   email: string;
   avatar: string | null;
-};
+}
 
 // Define the UserMetadata type
 export interface UserMetadata {
   name: string;
   email: string;
   avatar_url: string | null;
-};
+}
 
 // Define the UserContext type
 export interface UserContextType {
   user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
   isLoading: boolean;
   error: string | null;
   refreshUser: () => Promise<void>;
-  logout: () => Promise<void>;
-};
+}
