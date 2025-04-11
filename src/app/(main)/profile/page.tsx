@@ -185,7 +185,7 @@ const ProfilePage = () => {
       <Card className="mb-8 bg-white border border-gray-100 shadow-sm">
         <CardHeader className="border-b border-gray-100 bg-gray-50">
           <CardTitle className="text-blue-700">Projects</CardTitle>
-          <CardDescription>What I've built</CardDescription>
+          <CardDescription>What I&apos;ve built</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
           <div className="grid gap-6 md:grid-cols-2">

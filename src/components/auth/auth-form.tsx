@@ -28,7 +28,7 @@ export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-b from-white to-gray-50 flex items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
+    <div className="rounded-lg w-full bg-gradient-to-b flex items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <h1 className="mt-10 text-2xl font-semibold tracking-tight text-center text-gray-900">
           {mode === "signin" ? "Welcome back" : "Create your account"}
@@ -78,7 +78,7 @@ export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
               ? "New to our platform? "
               : "Already have an account? "}
             <Link
-              href={`${mode === "signin" ? "/sign-up" : "/sign-in"}}`}
+              href={`${mode === "signin" ? "/sign-up" : "/sign-in"}`}
               className="font-medium text-blue-600 hover:text-blue-500"
             >
               {mode === "signin" ? "Create an account" : "Sign in"}
