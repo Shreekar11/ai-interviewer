@@ -11,20 +11,29 @@ export function AuthForm({ mode = "signin" }: { mode?: "signin" | "signup" }) {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setLoading(true);
-    const supabase = createClient();
-    supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `http://localhost:3000/api/auth/callback?mode=${mode}`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?mode=${mode}`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
         },
-      },
-    });
-    setLoading(false);
+      });
+
+      if (error) {
+        console.error("OAuth sign-in error:", error);
+      }
+    } catch (err) {
+      console.error("OAuth sign-in exception:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

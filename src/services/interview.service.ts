@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/client";
 import { InterviewData, InterviewFeedback } from "@/types/interview";
 import { generateCustomQuestions } from "@/utils/generate-custom-question";
 import { generatePersonalQuestions } from "@/utils/generate-personal-questions";
-import { createServiceClient } from "@/utils/supabase/server";
+import { createServiceClient } from "@/utils/supabase/client";
 import { UserService } from "./user.service";
 
 /**

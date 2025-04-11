@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
-import { createServiceClient } from "@/utils/supabase/server";
+import { createServiceClient } from "@/utils/supabase/client";
 
 interface UserMetadata {
   name?: string;
