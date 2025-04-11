@@ -62,7 +62,7 @@ const ProfilePage = () => {
 
   return (
     <main className="container p-4 md:p-6 max-w-6xl mx-auto">
-      <div className="flex items-end py-10">
+      <div className="flex items-end pb-10">
         <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-white shadow-lg">
           <AvatarImage
             src={userData?.profile_image}
