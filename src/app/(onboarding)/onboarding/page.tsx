@@ -175,7 +175,7 @@ const OnboardingPage = () => {
 
       if (result.status) {
         toast.success("Profile completed successfully!");
-        router.push("/dashboard");
+        router.push("/complete");
       } else {
         toast.error(result.message);
         if (result.error === "AUTH_ERROR") {
