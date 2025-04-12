@@ -139,7 +139,7 @@ export default function LandingPage() {
               variants={textVariants}
               className="text-xl text-gray-600 max-w-2xl mx-auto mb-10"
             >
-              PrepPulse is the enterprise-ready platform to prepare for all of
+              InterviewPrep is the enterprise-ready platform to prepare for all of
               your interviews. Plus, enabling personalized feedback to improve
               your interview skills.
             </motion.p>
