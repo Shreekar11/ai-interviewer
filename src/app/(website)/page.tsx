@@ -171,7 +171,7 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 1 }}
               className="mt-4 text-sm text-gray-500"
             >
-              7-day free trial. No credit card required.
+              Prepare for your next interview with our AI-assistant
             </motion.div>
           </div>
         </main>
