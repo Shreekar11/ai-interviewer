@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Mail,
-  Briefcase,
-  Calendar,
-  ExternalLink,
-} from "lucide-react";
+import { Mail, Briefcase, Calendar, ExternalLink } from "lucide-react";
 import useProfile from "@/hooks/use-profile";
 import { useUser } from "@/context/user.context";
 
@@ -229,19 +224,12 @@ const ProfilePage = () => {
           <CardDescription>Technologies I work with</CardDescription>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="flex justify-start items-center gap-2 ">
             {userData?.skills.map((skill, index) => (
               <div key={index} className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{skill.skill_name}</span>
-                  <span className="text-sm text-gray-500">
-                    {Math.floor(Math.random() * 30) + 70}%
-                  </span>
-                </div>
-                <Progress
-                  value={Math.floor(Math.random() * 30) + 70}
-                  className="h-2"
-                />
+                <Badge variant={"outline"} className="font-medium text-sm">
+                  {skill.skill_name}
+                </Badge>
               </div>
             ))}
           </div>
