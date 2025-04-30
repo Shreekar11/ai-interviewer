@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# [InterviewPrep - AI Interview Assistant](https://interviewprep-sigma.vercel.app/)
+
+![Landing Page](assets/landing.png)
+
+> Crack your next interview
+
+## Solution
+
+InterviewPrep streamlines the interview preparation process using AI-driven technology. Users can choose between two modes: Personal Interviews, tailored specifically to their profile, and Custom Interviews, designed based on selected skills and job descriptions. The platform is built with TypeScript, Next.js, and Supabase, ensuring a robust and scalable user experience.
+
+## Features
+
+- Streamlined Interview Creation
+- AI-powered interview experience
+- Interview feedback and summary
+- Google OAuth using Supabase
+- Personal interview based on your profile
+- Custom interview according to your usecase
+- Beautiful User Interface
+
+
+## DB Diagram
+
+![DB Diagram](assets/db_diagram.png)
+
+## Tech Stack
+
+- **Next.js** - React framework for production
+- **TypeScript** - Superset of JavaScript for type safety
+- **Tailwind CSS** - Utility-first CSS framework
+- **Supabase** - Used as primary backend functionality and Database
+- **PostgerSQL** - SQL database for storing data and maintain complex data relations
+- **Gemini** - To generate questions and feedback for interviews
+- **LiveKit** - Open-source real-time conversation platform to create AI-interviews
+ 
+## Deployment
+- **Vercel** - Deployment platform for frontend
+
+## Deployment Links
+
+- Website: [InterviewPrep](https://interviewprep-sigma.vercel.app/)
+
+## Solution Future Aspects
+
+- Add a feature to video recording for further analysis
+- Create a high-level distributed architecture
+- Implement microservices architecture
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repository:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    ```
+    git clone https://github.com/Shreekar11/AI-Interviewer.git
+    ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. Navigate to the project directory:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+    ```
+    cd AI-Interviewer
+    ```
 
-## Learn More
+3. Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+    ```
+    npm install
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Create a `.env` file in the root directory and add your environment variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    ```
+    NEXT_PUBLIC_BASEURL=http://localhost:3000
+    NEXT_PUBLIC_SUPABASE_URL=
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=
+    NEXT_PUBLIC_SUPABASE_SERVICE_ROLE=
+    NEXT_PUBLIC_GEMINI_KEY=
+    LIVEKIT_URL=
+    LIVEKIT_API_KEY=
+    LIVEKIT_API_SECRET=
+    ```
 
-## Deploy on Vercel
+5. Run the application:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    ```
+    npm run dev
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+
+## Contact
+
+For any inquiries or support, please email us at shreekargade2004@gmail.com or open an issue in this repository.
+
+Enjoy your AI-Interview process!⚒️🚀
