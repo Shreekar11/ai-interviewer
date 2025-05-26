@@ -3,6 +3,9 @@ import { InterviewService } from "@/services/interview.service";
 import { parseInterviewFeedback } from "@/utils/parse-feedback";
 import { UserService } from "@/services/user.service";
 
+// In-memory storage for processing status (in production, use Redis or similar)
+const processingStatus = new Map();
+
 export async function POST(req: NextRequest) {
   try {
     const { room_id, transcription } = await req.json();
@@ -33,6 +36,84 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Set initial processing status
+    processingStatus.set(interviewId, {
+      status: 'processing',
+      data: null,
+      error: null
+    });
+
+    // Start async processing
+    processFeedbackAsync(interviewId, transcript);
+
+    return NextResponse.json({
+      status: true,
+      message: "Feedback generation started",
+      data: {
+        interviewId,
+        status: 'processing'
+      }
+    });
+  } catch (err: any) {
+    console.error("Error: ", err);
+    return NextResponse.json(
+      {
+        status: false,
+        message: "Error initiating feedback generation",
+        error: err.message,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// New endpoint to check feedback status
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const interviewId = searchParams.get('interviewId');
+
+    if (!interviewId) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "Interview ID is required",
+        },
+        { status: 400 }
+      );
+    }
+
+    const status = processingStatus.get(interviewId);
+
+    if (!status) {
+      return NextResponse.json(
+        {
+          status: false,
+          message: "No processing status found for this interview",
+        },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      status: true,
+      data: status
+    });
+  } catch (err: any) {
+    console.error("Error: ", err);
+    return NextResponse.json(
+      {
+        status: false,
+        message: "Error checking feedback status",
+        error: err.message,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+async function processFeedbackAsync(interviewId: string, transcript: any[]) {
+  try {
     const model_response = await fetch(
       `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/generate`,
       {
@@ -50,32 +131,28 @@ export async function POST(req: NextRequest) {
     }
 
     const feedback_data = await model_response.json();
-
     const feedbacks = feedback_data.data?.split(/\n{2,}/);
-
     const result = parseInterviewFeedback(feedbacks);
 
-    // Use the interview service to save feedback data
+    // Save feedback data
     const interviewService = new InterviewService();
     await interviewService.saveFeedbackData(interviewId, result);
 
-    return NextResponse.json({
-      status: true,
-      message: "Feedback generated successfully!",
+    // Update processing status
+    processingStatus.set(interviewId, {
+      status: 'completed',
       data: {
         feedback: result.feedback,
         summary: result.summary,
       },
+      error: null
     });
   } catch (err: any) {
-    console.error("Error: ", err);
-    return NextResponse.json(
-      {
-        status: false,
-        message: "Error transcripting interview",
-        error: err.message,
-      },
-      { status: 500 }
-    );
+    console.error("Error in async processing: ", err);
+    processingStatus.set(interviewId, {
+      status: 'failed',
+      data: null,
+      error: err.message
+    });
   }
 }
