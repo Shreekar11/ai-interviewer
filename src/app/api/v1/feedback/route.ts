@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { InterviewService } from "@/services/interview.service";
 import { parseInterviewFeedback } from "@/utils/parse-feedback";
 import { UserService } from "@/services/user.service";
+import redis from "@/utils/redis";
 
 // In-memory storage for processing status (in production, use Redis or similar)
 const processingStatus = new Map();
@@ -36,23 +37,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Set initial processing status
-    processingStatus.set(interviewId, {
-      status: 'processing',
+    // Set initial status in Redis
+    await redis.set(`feedback:${interviewId}:status`, JSON.stringify({
+      status: "processing",
       data: null,
-      error: null
-    });
+      error: null,
+    }));
 
-    // Start async processing
-    processFeedbackAsync(interviewId, transcript);
+    // Push job to Redis queue
+    await redis.rpush("feedback_jobs", JSON.stringify({
+      interviewId,
+      transcript,
+    }));
 
     return NextResponse.json({
       status: true,
       message: "Feedback generation started",
       data: {
         interviewId,
-        status: 'processing'
-      }
+        status: "processing",
+      },
     });
   } catch (err: any) {
     console.error("Error: ", err);
@@ -83,9 +87,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const status = processingStatus.get(interviewId);
-
-    if (!status) {
+    const statusStr = await redis.get(`feedback:${interviewId}:status`);
+    if (!statusStr) {
       return NextResponse.json(
         {
           status: false,
@@ -97,7 +100,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       status: true,
-      data: status
+      data: JSON.parse(statusStr),
     });
   } catch (err: any) {
     console.error("Error: ", err);
