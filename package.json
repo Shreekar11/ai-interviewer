@@ -25,6 +25,7 @@
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.1",
     "canvas-confetti": "^1.9.3",
+    "ioredis": "^5.6.1",
     "livekit-client": "^2.9.9",
     "livekit-server-sdk": "^2.10.2",
     "next": "14.2.4",
