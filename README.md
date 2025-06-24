@@ -13,6 +13,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - Streamlined Interview Creation
 - AI-powered interview experience
 - Interview feedback and summary
+- Distributed systems using message queue and worker pools.
 - Google OAuth using Supabase
 - Personal interview based on your profile
 - Custom interview according to your usecase
@@ -32,6 +33,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - **PostgerSQL** - SQL database for storing data and maintain complex data relations
 - **Gemini** - To generate questions and feedback for interviews
 - **LiveKit** - Open-source real-time conversation platform to create AI-interviews
+- **Redis** - In memory layer used as a message queue
  
 ## Deployment
 - **Vercel** - Deployment platform for frontend
