@@ -14,6 +14,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - AI-powered interview experience
 - Interview feedback and summary
 - Distributed systems using message queue and worker pools.
+- Uses RabbitMQ as a message broker for efficient processing.
 - Google OAuth using Supabase
 - Personal interview based on your profile
 - Custom interview according to your usecase
