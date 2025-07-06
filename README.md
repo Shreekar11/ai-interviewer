@@ -34,7 +34,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - **PostgerSQL** - SQL database for storing data and maintain complex data relations
 - **Gemini** - To generate questions and feedback for interviews
 - **LiveKit** - Open-source real-time conversation platform to create AI-interviews
-- **Redis** - In memory layer used as a message queue
+- **RabbitMQ** - Message broker for processing tasks
  
 ## Deployment
 - **Vercel** - Deployment platform for frontend
