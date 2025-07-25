@@ -6,7 +6,7 @@
 
 ## Solution
 
-InterviewPrep streamlines the interview preparation process using AI-driven technology. Users can choose between two modes: Personal Interviews, tailored specifically to their profile, and Custom Interviews, designed based on selected skills and job descriptions. The platform is built with TypeScript, Next.js, and Supabase, ensuring a robust, scalable and distributed user experience.
+InterviewPrep streamlines the interview preparation process using AI-driven technology. Users can choose between two modes: Personal Interviews, tailored specifically to their profile, and Custom Interviews, designed based on selected skills and job descriptions. The platform is built with TypeScript, Next.js, and Supabase, ensuring a robust, scalable and distributed user experience using RabbitMQ as a message broker and worker pools.
 
 ## Features
 
