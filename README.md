@@ -6,7 +6,7 @@
 
 ## Solution
 
-InterviewPrep streamlines the interview preparation process using AI-driven technology. Users can choose between two modes: Personal Interviews, tailored specifically to their profile, and Custom Interviews, designed based on selected skills and job descriptions. The platform is built with TypeScript, Next.js, and Supabase, ensuring a robust, scalable and distributed user experience using RabbitMQ as a message broker and worker pools.
+InterviewPrep streamlines the interview preparation process using AI-driven technology. Users can choose between two modes: Personal Interviews, tailored specifically to their profile, and Custom Interviews, designed based on selected skills and job descriptions. The platform is built with TypeScript, Next.js, and Supabase, ensuring a robust, scalable and distributed user experience using a message broker and worker pools.
 
 ## Features
 
@@ -14,7 +14,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - AI-powered interview experience
 - Interview feedback and summary
 - Distributed systems using message queue and worker pools.
-- Uses RabbitMQ as a message broker for efficient processing.
+- Uses a message broker for efficient processing.
 - Google OAuth using Supabase
 - Personal interview based on your profile
 - Custom interview according to your usecase
@@ -34,7 +34,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - **PostgerSQL** - SQL database for storing data and maintain complex data relations
 - **Gemini** - To generate questions and feedback for interviews
 - **LiveKit** - Open-source real-time conversation platform to create AI-interviews
-- **RabbitMQ** - Message broker for processing tasks
+- **Redis** - Message broker for processing tasks
  
 ## Deployment
 - **Vercel** - Deployment platform for frontend
