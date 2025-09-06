@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { InterviewService } from "@/services/interview.service";
 import { parseInterviewFeedback } from "@/utils/parse-feedback";
 import { UserService } from "@/services/user.service";
-import redis from "@/utils/redis";
-
-// In-memory storage for processing status (in production, use Redis or similar)
-const processingStatus = new Map();
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,18 +33,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Set initial status in Redis
-    await redis.set(`feedback:${interviewId}:status`, JSON.stringify({
-      status: "processing",
-      data: null,
-      error: null,
-    }));
-
     // Push job to Redis queue
-    await redis.rpush("feedback_jobs", JSON.stringify({
-      interviewId,
-      transcript,
-    }));
+    await processFeedbackAsync(interviewId, transcript);
 
     return NextResponse.json({
       status: true,
@@ -87,20 +73,12 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const statusStr = await redis.get(`feedback:${interviewId}:status`);
-    if (!statusStr) {
-      return NextResponse.json(
-        {
-          status: false,
-          message: "No processing status found for this interview",
-        },
-        { status: 404 }
-      );
-    }
+    const interviewService = new InterviewService();
+    const interview = await interviewService.getInterviewById(interviewId);
 
     return NextResponse.json({
       status: true,
-      data: JSON.parse(statusStr),
+      data: interview,
     });
   } catch (err: any) {
     console.error("Error: ", err);
@@ -141,21 +119,17 @@ async function processFeedbackAsync(interviewId: string, transcript: any[]) {
     const interviewService = new InterviewService();
     await interviewService.saveFeedbackData(interviewId, result);
 
-    // Update processing status
-    processingStatus.set(interviewId, {
-      status: 'completed',
-      data: {
-        feedback: result.feedback,
-        summary: result.summary,
-      },
-      error: null
-    });
+    return {
+      status: true,
+      message: "Feedback saved successfully",
+      data: result,
+    };
   } catch (err: any) {
     console.error("Error in async processing: ", err);
-    processingStatus.set(interviewId, {
-      status: 'failed',
-      data: null,
-      error: err.message
-    });
+    return {
+      status: false,
+      message: "Error saving feedback",
+      error: err.message,
+    };
   }
 }
