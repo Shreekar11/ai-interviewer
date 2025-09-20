@@ -20,7 +20,7 @@ InterviewPrep streamlines the interview preparation process using AI-driven tech
 - Custom interview according to your usecase
 - Beautiful User Interface
 
-## High-level Agent Architecture
+## High-level agent flow diagram
 
 <img width="3840" height="1886" alt="agent-architecture" src="https://github.com/user-attachments/assets/2732eefd-6589-4840-929a-e0cbd81c71a2" />
 
